@@ -1,0 +1,151 @@
+/* Check Late Page Styles */
+
+.date-time-bar {
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-md) var(--space-lg);
+  display: flex;
+  justify-content: center;
+  gap: var(--space-xl);
+  flex-wrap: wrap;
+  font-size: var(--font-sm);
+  color: var(--color-text-light);
+}
+
+.date-time-bar strong {
+  color: var(--color-text);
+  font-weight: var(--font-semibold);
+}
+
+.today-records-section {
+  background-color: var(--color-late-bg);
+  border: 2px solid var(--color-late);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.today-records-section h2 {
+  font-size: var(--font-xl);
+  color: var(--color-text);
+  margin-bottom: var(--space-md);
+}
+
+.today-records-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.today-record-item {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-late);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.record-student {
+  flex: 1;
+  min-width: 200px;
+}
+
+.record-student strong {
+  color: var(--color-text);
+}
+
+.record-info {
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+  font-size: var(--font-sm);
+  color: var(--color-text-light);
+}
+
+.record-reason {
+  font-size: var(--font-sm);
+  color: var(--color-text-light);
+  font-style: italic;
+}
+
+.check-late-section {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.search-bar {
+  margin-bottom: var(--space-lg);
+}
+
+.students-list {
+  max-height: 500px;
+  overflow-y: auto;
+  margin-bottom: var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm);
+}
+
+.student-checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-sm);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.student-checkbox-item:hover {
+  border-color: var(--color-primary);
+  background-color: var(--color-bg);
+}
+
+.student-checkbox-item input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.student-checkbox-item.checked {
+  border-color: var(--color-primary);
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+.student-info-text {
+  flex: 1;
+}
+
+.student-code {
+  font-weight: var(--font-semibold);
+  color: var(--color-primary);
+}
+
+.student-name {
+  color: var(--color-text);
+  margin-left: var(--space-sm);
+}
+
+.selection-info {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  text-align: center;
+  margin-bottom: var(--space-lg);
+}
+
+.form-actions {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: center;
+  flex-wrap: wrap;
+}

@@ -1,0 +1,56 @@
+/* Dashboard Page Styles */
+
+.dashboard-section {
+  margin-top: var(--space-lg);
+}
+
+.classroom-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-lg);
+}
+
+.classroom-card {
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+}
+
+.classroom-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+}
+
+.classroom-name {
+  font-size: var(--font-2xl);
+  font-weight: var(--font-bold);
+  color: var(--color-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.classroom-info {
+  font-size: var(--font-sm);
+  color: var(--color-text-light);
+  margin-bottom: var(--space-xs);
+}
+
+.classroom-late {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--font-sm);
+  color: var(--color-danger);
+  font-weight: var(--font-semibold);
+  margin-top: var(--space-sm);
+}
+
+.classroom-late::before {
+  content: '🔴';
+  font-size: var(--font-base);
+}
