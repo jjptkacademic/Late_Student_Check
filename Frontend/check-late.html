@@ -112,6 +112,24 @@
         </div>
     </div>
 
+    <!-- Late time modal -->
+    <div id="lateFormModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>กำหนดเวลา</h3>
+                <button class="modal-close" onclick="hideLateFormModal()">✖️</button>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <label for="lateTime" style="display: block; margin-bottom: var(--space-sm);">⏰ เวลามาสาย</label>
+                <input type="time" id="lateTime" style="padding: var(--space-sm); width: 200px; text-align: center;">
+            </div>
+            <div class="modal-footer" style="display: flex; gap: var(--space-sm); justify-content: center;">
+                <button class="btn btn-outline" onclick="hideLateFormModal()">ยกเลิก</button>
+                <button class="btn btn-primary" onclick="confirmSave()">บันทึก</button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/config.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/storage.js"></script>
