@@ -178,36 +178,57 @@ async function showStudentDetail(student) {
     const response = await API.getLateRecords({ student_id: student.student_id });
     
     if (response.success && response.data.length > 0) {
-      historyList.innerHTML = '';
+      // Create table
+      const table = document.createElement('table');
+      table.className = 'history-table';
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th style="width: 40px;">#</th>
+            <th>วันที่</th>
+            <th>เวลา</th>
+            <th>สาเหตุ</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      `;
       
-      response.data.forEach(record => {
-        const item = document.createElement('div');
-        item.className = 'history-item';
-        
+      const tbody = table.querySelector('tbody');
+      
+      response.data.forEach((record, index) => {
+        const tr = document.createElement('tr');
         const displayTime = formatTime(record.late_time);
         
-        item.innerHTML = `
-          <div>
-            <span class="history-date">📅 ${formatDateThai(record.late_date)}</span>
-            <span class="history-time">⏰ ${displayTime}</span>
-          </div>
-          ${record.reason ? `<div class="history-reason">💬 ${record.reason}</div>` : ''}
+        tr.innerHTML = `
+          <td class="text-center">${index + 1}</td>
+          <td>📅 ${formatDateThai(record.late_date)}</td>
+          <td>⏰ ${displayTime}</td>
+          <td>${record.reason ? `💬 ${record.reason}` : '-'}</td>
         `;
-        historyList.appendChild(item);
+        tbody.appendChild(tr);
       });
+      
+      historyList.innerHTML = '';
+      historyList.appendChild(table);
     } else {
-      historyList.innerHTML = '<p style="text-align: center; color: var(--color-text-light);">ไม่มีประวัติการมาสาย</p>';
+      historyList.innerHTML = '<p style="text-align: center; color: var(--color-text-light); padding: var(--space-lg);">ไม่มีประวัติการมาสาย</p>';
     }
   } catch (error) {
     console.error('Error loading history:', error);
-    historyList.innerHTML = '<p style="text-align: center; color: var(--color-danger);">❌ เกิดข้อผิดพลาดในการโหลดข้อมูล</p>';
+    historyList.innerHTML = '<p style="text-align: center; color: var(--color-danger); padding: var(--space-lg);">❌ เกิดข้อผิดพลาดในการโหลดข้อมูล</p>';
   }
 }
+
+// Export function for use in check-late.js
+window.showStudentDetailFromStats = showStudentDetail;
 
 // Hide student detail modal
 function hideStudentDetail() {
   document.getElementById('detailModal').style.display = 'none';
 }
+
+// Export for check-late.js
+window.hideStudentDetail = hideStudentDetail;
 
 // Refresh stats
 async function refreshStats() {

@@ -21,6 +21,7 @@
                     <h1>เช็คชื่อมาสาย</h1>
                 </div>
                 <div class="header-right">
+                    <button id="viewStatsBtn" class="btn btn-secondary">📊 ดูสถิติทั้งหมด</button>
                     <label for="classSelect">ห้อง:</label>
                     <select id="classSelect" class="class-selector">
                         <!-- Options loaded dynamically -->
@@ -36,7 +37,10 @@
 
         <main class="main-content">
             <section class="today-records-section" id="todayRecordsSection" style="display: none;">
-                <h2>✅ นักเรียนที่บันทึกมาสายวันนี้ (<span id="todayCount">0</span> คน)</h2>
+                <div class="section-header-inline">
+                    <h2>✅ นักเรียนที่บันทึกมาสายวันนี้ (<span id="todayCount">0</span> คน)</h2>
+                    <button id="viewTodayStatsBtn" class="btn btn-sm btn-secondary">📊 ดูสถิติ</button>
+                </div>
                 <div id="todayRecordsList" class="today-records-list">
                     <!-- Today's records loaded here -->
                 </div>
@@ -88,24 +92,26 @@
         </main>
     </div>
 
-    <div id="lateFormModal" class="modal" style="display: none;">
-        <div class="modal-content">
+    <div id="detailModal" class="modal" style="display: none;">
+        <div class="modal-content modal-large">
             <div class="modal-header">
-                <h3>บันทึกการมาสาย</h3>
-                <button class="modal-close" id="closeModal">✖️</button>
+                <h3>รายละเอียดการมาสาย</h3>
+                <button class="modal-close" id="closeDetailModal">✖️</button>
             </div>
             <div class="modal-body">
-                <div class="form-group">
-                    <label for="lateTime">⏰ เวลาที่มาสาย (ใช้สำหรับทุกคนที่เลือก)</label>
-                    <input type="time" id="lateTime" class="form-input">
+                <div class="student-info">
+                    <p><strong>👤 นักเรียน:</strong> <span id="detailName"></span></p>
+                    <p><strong>🏫 ห้อง:</strong> <span id="detailClass"></span></p>
+                    <p><strong>🔢 รหัส:</strong> <span id="detailCode"></span></p>
+                    <p><strong>📊 มาสายทั้งหมด:</strong> <span id="detailTotal"></span> ครั้ง</p>
                 </div>
-                <p style="font-size: var(--font-sm); color: var(--color-text-light);">
-                    💡 <strong>หมายเหตุ:</strong> สาเหตุการมาสายสามารถระบุได้ในตารางด้านบน
-                </p>
+                <h4>📅 ประวัติการมาสาย:</h4>
+                <div id="detailHistory" class="history-table-container">
+                    <!-- History table loaded here -->
+                </div>
             </div>
             <div class="modal-footer">
-                <button id="confirmSaveBtn" class="btn btn-primary">✅ ยืนยันการบันทึก</button>
-                <button id="cancelSaveBtn" class="btn btn-outline">❌ ยกเลิก</button>
+                <button id="closeDetailBtn" class="btn btn-primary">ปิด</button>
             </div>
         </div>
     </div>

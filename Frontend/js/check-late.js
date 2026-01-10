@@ -234,6 +234,7 @@ function renderTodayRecords() {
           ${record.reason ? `<span class="record-reason">💬 ${record.reason}</span>` : ''}
         </div>
         <div class="record-actions">
+          <button class="btn btn-sm btn-secondary" onclick="showStudentDetail(${student.student_id})">📊 สถิติ</button>
           <button class="btn btn-sm btn-outline" onclick="deleteLateRecord(${record.late_id})">🗑️ ลบ</button>
         </div>
       `;
@@ -410,6 +411,25 @@ async function deleteLateRecord(lateId) {
   }
 }
 
+// Show student detail modal
+async function showStudentDetail(studentId) {
+  const modal = document.getElementById('detailModal');
+  const student = allStudents.find(s => s.student_id == studentId);
+  
+  if (!student) {
+    showNotification('❌ ไม่พบข้อมูลนักเรียน', 'error');
+    return;
+  }
+  
+  // Use the same modal from stats.js
+  window.showStudentDetailFromStats(student);
+}
+
+// Hide student detail modal
+function hideStudentDetail() {
+  window.hideStudentDetail();
+}
+
 // Event Listeners
 document.addEventListener('DOMContentLoaded', function() {
   loadPage();
@@ -420,6 +440,11 @@ document.addEventListener('DOMContentLoaded', function() {
   // Home button
   document.getElementById('homeBtn')?.addEventListener('click', () => {
     window.location.href = 'dashboard.html';
+  });
+  
+  // View stats button
+  document.getElementById('viewStatsBtn')?.addEventListener('click', () => {
+    window.location.href = 'stats.html';
   });
   
   // Class selector

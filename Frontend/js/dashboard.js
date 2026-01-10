@@ -3,12 +3,37 @@ requireAuth();
 
 let allStudents = [];
 let lateSummary = [];
+let cacheTimestamp = null;
+const CACHE_DURATION = 3600000; // 1 hour in milliseconds
+
+// Check if cache is valid
+function isCacheValid() {
+  if (!cacheTimestamp) return false;
+  return (Date.now() - cacheTimestamp) < CACHE_DURATION;
+}
 
 // Load dashboard data
-async function loadDashboard() {
+async function loadDashboard(forceRefresh = false) {
   showLoading('loadingSpinner', '🏫 กำลังโหลดข้อมูลห้องเรียน...');
   
   try {
+    // Check cache first
+    if (!forceRefresh && isCacheValid()) {
+      const cachedStudents = Storage.get('cached_students');
+      const cachedSummary = Storage.get('cached_summary');
+      
+      if (cachedStudents && cachedSummary) {
+        console.log('📦 Using cached data');
+        allStudents = cachedStudents;
+        lateSummary = cachedSummary;
+        renderClassrooms();
+        hideLoading();
+        return;
+      }
+    }
+    
+    console.log('🔄 Fetching fresh data');
+    
     // Fetch students and late summary
     const [studentsResponse, summaryResponse] = await Promise.all([
       API.getStudents(),
@@ -17,11 +42,17 @@ async function loadDashboard() {
     
     if (studentsResponse.success) {
       allStudents = studentsResponse.data;
+      Storage.set('cached_students', allStudents);
     }
     
     if (summaryResponse.success) {
       lateSummary = summaryResponse.data;
+      Storage.set('cached_summary', lateSummary);
     }
+    
+    // Update cache timestamp
+    cacheTimestamp = Date.now();
+    Storage.set('cache_timestamp', cacheTimestamp);
     
     renderClassrooms();
   } catch (error) {
@@ -32,10 +63,35 @@ async function loadDashboard() {
   }
 }
 
+// Load cache timestamp on init
+function initCache() {
+  const savedTimestamp = Storage.get('cache_timestamp');
+  if (savedTimestamp) {
+    cacheTimestamp = savedTimestamp;
+  }
+}
+
+// Clear cache
+function clearCache() {
+  Storage.remove('cached_students');
+  Storage.remove('cached_summary');
+  Storage.remove('cache_timestamp');
+  cacheTimestamp = null;
+  console.log('🗑️ Cache cleared');
+}
+
 // Render classroom cards
 function renderClassrooms() {
   const grid = document.getElementById('classroomGrid');
   grid.innerHTML = '';
+  
+  // Show cache indicator
+  if (isCacheValid()) {
+    const cacheIndicator = document.createElement('div');
+    cacheIndicator.style.cssText = 'grid-column: 1/-1; text-align: center; padding: var(--space-sm); background: var(--color-bg); border-radius: var(--radius-md); font-size: var(--font-sm); color: var(--color-text-light);';
+    cacheIndicator.innerHTML = '📦 ใช้ข้อมูลจาก Cache (ประหยัดเวลาโหลด)';
+    grid.appendChild(cacheIndicator);
+  }
   
   // Group students by classroom
   const grouped = groupBy(allStudents, 'class_room');
@@ -61,11 +117,13 @@ function renderClassrooms() {
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', function() {
+  initCache();
   loadDashboard();
   
   // Logout button
   document.getElementById('logoutBtn')?.addEventListener('click', function() {
     if (confirm('ต้องการออกจากระบบหรือไม่?')) {
+      clearCache(); // Clear cache on logout
       logout();
     }
   });
@@ -73,5 +131,12 @@ document.addEventListener('DOMContentLoaded', function() {
   // View stats button
   document.getElementById('viewStatsBtn')?.addEventListener('click', function() {
     window.location.href = 'stats.html';
+  });
+  
+  // Refresh button (if exists)
+  document.getElementById('refreshBtn')?.addEventListener('click', function() {
+    clearCache();
+    loadDashboard(true); // Force refresh
+    showNotification('🔄 รีเฟรชข้อมูลเรียบร้อย', 'success');
   });
 });

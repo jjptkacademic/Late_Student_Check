@@ -29,7 +29,10 @@
             <section class="dashboard-section">
                 <div class="section-header">
                     <h2>🎯 เลือกห้องเรียน</h2>
-                    <button id="viewStatsBtn" class="btn btn-secondary">📊 ดูสถิติทั้งหมด</button>
+                    <div style="display: flex; gap: var(--space-md);">
+                        <button id="refreshBtn" class="btn btn-outline">🔄 รีเฟรชข้อมูล</button>
+                        <button id="viewStatsBtn" class="btn btn-secondary">📊 ดูสถิติทั้งหมด</button>
+                    </div>
                 </div>
 
                 <div id="loadingSpinner" class="loading" style="display: none;">

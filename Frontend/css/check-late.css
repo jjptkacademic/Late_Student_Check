@@ -17,6 +17,19 @@
   font-weight: var(--font-semibold);
 }
 
+.section-header-inline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-md);
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.section-header-inline h2 {
+  margin: 0;
+}
+
 .today-records-section {
   background-color: var(--color-late-bg);
   border: 2px solid var(--color-late);
@@ -77,6 +90,52 @@
   display: flex;
   gap: var(--space-sm);
   justify-content: flex-end;
+}
+
+/* History Table in Modal */
+.history-table-container {
+  max-height: 400px;
+  overflow-y: auto;
+  margin-top: var(--space-md);
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-sm);
+}
+
+.history-table thead {
+  background-color: var(--color-primary);
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.history-table th {
+  padding: var(--space-sm) var(--space-md);
+  text-align: left;
+  font-weight: var(--font-semibold);
+  border-bottom: 2px solid var(--color-primary-dark);
+}
+
+.history-table tbody tr {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.history-table tbody tr:hover {
+  background-color: var(--color-bg);
+}
+
+.history-table td {
+  padding: var(--space-sm) var(--space-md);
+}
+
+.history-table .text-center {
+  text-align: center;
+  color: var(--color-text-light);
+  font-weight: var(--font-semibold);
 }
 
 .check-late-section {
