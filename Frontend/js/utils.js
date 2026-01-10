@@ -1,5 +1,27 @@
 // Utility Functions
 
+// Center viewport on mobile - scroll to show 680px content centered
+function centerViewport() {
+  // Calculate scroll to center 680px content in viewport
+  const contentWidth = 680;
+  const viewportWidth = window.innerWidth;
+  const totalWidth = 1024;
+  
+  // Center of content in the 1024px layout
+  const contentCenter = (totalWidth - contentWidth) / 2 + contentWidth / 2;
+  
+  // Where to scroll to show content centered
+  const scrollX = contentCenter - viewportWidth / 2;
+  
+  window.scrollTo(Math.max(0, scrollX), 0);
+}
+
+// Call on load and resize
+window.addEventListener('load', () => {
+  setTimeout(centerViewport, 100);
+});
+window.addEventListener('resize', centerViewport);
+
 // Format date to Thai format
 function formatDateThai(date) {
   const d = new Date(date);

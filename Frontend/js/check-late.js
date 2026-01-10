@@ -278,9 +278,9 @@ const searchStudents = debounce(function(query) {
   const filtered = allStudents.filter(student => {
     const searchText = query.toLowerCase();
     return (
-      student.student_code.toLowerCase().includes(searchText) ||
-      student.first_name.toLowerCase().includes(searchText) ||
-      student.last_name.toLowerCase().includes(searchText)
+      String(student.student_code).toLowerCase().includes(searchText) ||
+      String(student.first_name).toLowerCase().includes(searchText) ||
+      String(student.last_name).toLowerCase().includes(searchText)
     );
   });
   
