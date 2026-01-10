@@ -27,6 +27,13 @@
   font-size: 4rem;
   margin-bottom: var(--space-md);
 }
+.login-header .logo img {
+  width: 4rem;
+  height: 4rem;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
 
 .login-header h1 {
   font-size: var(--font-2xl);
