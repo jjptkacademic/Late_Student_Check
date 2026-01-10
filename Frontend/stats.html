@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สถิติและ Ranking - ระบบเช็คนักเรียนมาสาย</title>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/stats.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <button id="backBtn" class="btn btn-icon">⬅️</button>
+                    <button id="homeBtn" class="btn btn-icon">🏠</button>
+                    <h1>📊 สถิติการมาสาย</h1>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <section class="filters-section">
+                <div class="filters">
+                    <div class="filter-group">
+                        <label for="classFilter">ห้อง:</label>
+                        <select id="classFilter" class="filter-select">
+                            <option value="">ทั้งหมด</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="periodFilter">ช่วงเวลา:</label>
+                        <select id="periodFilter" class="filter-select">
+                            <option value="today">วันนี้</option>
+                            <option value="week">สัปดาห์นี้</option>
+                            <option value="month" selected>เดือนนี้</option>
+                            <option value="year">ปีนี้</option>
+                        </select>
+                    </div>
+                    <button id="refreshBtn" class="btn btn-primary">🔄 รีเฟรช</button>
+                </div>
+            </section>
+
+            <div id="loadingSpinner" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>กำลังโหลดข้อมูล...</p>
+            </div>
+
+            <section class="stats-overview">
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-info">
+                            <h3>ทั้งหมด</h3>
+                            <p class="stat-value" id="totalLate">0</p>
+                            <span class="stat-label">ครั้ง</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-info">
+                            <h3>นักเรียน</h3>
+                            <p class="stat-value" id="totalStudents">0</p>
+                            <span class="stat-label">คน</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-info">
+                            <h3>เฉลี่ย</h3>
+                            <p class="stat-value" id="avgLate">0</p>
+                            <span class="stat-label">ครั้ง/คน</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🏆</div>
+                        <div class="stat-info">
+                            <h3>ห้องสายสุด</h3>
+                            <p class="stat-value" id="topClass">-</p>
+                            <span class="stat-label" id="topClassCount"></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="ranking-section">
+                <h2>🏆 TOP 10 มาสายบ่อยสุด</h2>
+                <div id="rankingList" class="ranking-list">
+                    <!-- Ranking loaded here -->
+                </div>
+            </section>
+
+            <section class="chart-section">
+                <h2>📊 กราฟสรุปตามห้อง</h2>
+                <div id="classChart" class="chart-container">
+                    <!-- Chart loaded here -->
+                </div>
+            </section>
+
+            <section class="actions-section">
+                <button id="exportBtn" class="btn btn-outline">📄 Export Excel</button>
+                <button id="printBtn" class="btn btn-outline">🖨️ Print</button>
+            </section>
+        </main>
+    </div>
+
+    <div id="detailModal" class="modal" style="display: none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>รายละเอียดการมาสาย</h3>
+                <button class="modal-close" id="closeDetailModal">✖️</button>
+            </div>
+            <div class="modal-body">
+                <div class="student-info">
+                    <p><strong>👤 นักเรียน:</strong> <span id="detailName"></span></p>
+                    <p><strong>🏫 ห้อง:</strong> <span id="detailClass"></span></p>
+                    <p><strong>🔢 รหัส:</strong> <span id="detailCode"></span></p>
+                    <p><strong>📊 มาสายทั้งหมด:</strong> <span id="detailTotal"></span> ครั้ง</p>
+                </div>
+                <h4>📅 ประวัติการมาสาย:</h4>
+                <div id="detailHistory" class="history-list">
+                    <!-- History loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="closeDetailBtn" class="btn btn-primary">ปิด</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/api-helper.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/stats.js"></script>
+</body>
+</html>

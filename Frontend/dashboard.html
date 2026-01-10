@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หน้าหลัก - ระบบเช็คนักเรียนมาสาย</title>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <h1>🏫 ระบบเช็คนักเรียนมาสาย</h1>
+                    <p class="subtitle">👤 ครูผู้สอน</p>
+                </div>
+                <div class="header-right">
+                    <button id="logoutBtn" class="btn btn-outline">🚪 ออกจากระบบ</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <section class="dashboard-section">
+                <div class="section-header">
+                    <h2>🎯 เลือกห้องเรียน</h2>
+                    <button id="viewStatsBtn" class="btn btn-secondary">📊 ดูสถิติทั้งหมด</button>
+                </div>
+
+                <div id="loadingSpinner" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>กำลังโหลดข้อมูล...</p>
+                </div>
+
+                <div id="classroomGrid" class="classroom-grid">
+                    <!-- Classrooms will be loaded here dynamically -->
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>ระบบเช็คนักเรียนมาสาย © 2568</p>
+        </footer>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/api-helper.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

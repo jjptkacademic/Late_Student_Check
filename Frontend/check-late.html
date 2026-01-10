@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เช็คชื่อมาสาย - ระบบเช็คนักเรียนมาสาย</title>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/check-late.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <button id="backBtn" class="btn btn-icon">⬅️</button>
+                    <button id="homeBtn" class="btn btn-icon">🏠</button>
+                    <h1>เช็คชื่อมาสาย</h1>
+                </div>
+                <div class="header-right">
+                    <label for="classSelect">ห้อง:</label>
+                    <select id="classSelect" class="class-selector">
+                        <!-- Options loaded dynamically -->
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <div class="date-time-bar">
+            <span>📅 วันที่: <strong id="currentDate"></strong></span>
+            <span>⏰ เวลา: <strong id="currentTime"></strong></span>
+        </div>
+
+        <main class="main-content">
+            <section class="today-records-section" id="todayRecordsSection" style="display: none;">
+                <h2>✅ นักเรียนที่บันทึกมาสายวันนี้ (<span id="todayCount">0</span> คน)</h2>
+                <div id="todayRecordsList" class="today-records-list">
+                    <!-- Today's records loaded here -->
+                </div>
+            </section>
+
+            <section class="check-late-section">
+                <h2>📝 บันทึกการมาสาย (เลือกได้หลายคน)</h2>
+                
+                <div class="search-bar">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="🔍 ค้นหานักเรียน (รหัส, ชื่อ, นามสกุล)..."
+                        class="search-input"
+                    >
+                </div>
+
+                <div id="loadingSpinner" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>กำลังโหลดข้อมูล...</p>
+                </div>
+
+                <div id="studentsList" class="students-list">
+                    <!-- Students checkboxes loaded here -->
+                </div>
+
+                <div class="selection-info" id="selectionInfo" style="display: none;">
+                    <p>📌 เลือกแล้ว: <strong id="selectedCount">0</strong> คน</p>
+                </div>
+
+                <div class="form-actions">
+                    <button id="saveBtn" class="btn btn-primary btn-large">💾 บันทึกทั้งหมด</button>
+                    <button id="clearBtn" class="btn btn-outline btn-large">🗑️ ล้างการเลือก</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="lateFormModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>บันทึกการมาสาย</h3>
+                <button class="modal-close" id="closeModal">✖️</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="lateTime">⏰ เวลาที่มาสาย</label>
+                    <input type="time" id="lateTime" class="form-input">
+                    <button id="copyTimeBtn" class="btn btn-sm btn-outline">📋 คัดลอกเวลาให้ทุกคน</button>
+                </div>
+                <div class="form-group">
+                    <label for="lateReason">💬 เหตุผลการมาสาย</label>
+                    <select id="lateReason" class="form-select">
+                        <option value="">-- เลือกเหตุผล --</option>
+                        <option value="รถติด">รถติด</option>
+                        <option value="ตื่นสาย">ตื่นสาย</option>
+                        <option value="ธุระส่วนตัว">ธุระส่วนตัว</option>
+                        <option value="ป่วย">ป่วย</option>
+                        <option value="other">อื่นๆ (พิมพ์เอง)</option>
+                    </select>
+                    <input 
+                        type="text" 
+                        id="customReason" 
+                        class="form-input" 
+                        placeholder="ระบุเหตุผล..."
+                        style="display: none; margin-top: 0.5rem;"
+                    >
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="confirmSaveBtn" class="btn btn-primary">✅ ยืนยันการบันทึก</button>
+                <button id="cancelSaveBtn" class="btn btn-outline">❌ ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/api-helper.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/check-late.js"></script>
+</body>
+</html>

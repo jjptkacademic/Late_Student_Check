@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เข้าสู่ระบบ - ระบบเช็คนักเรียนมาสาย</title>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="logo">🏫</div>
+                <h1>ระบบเช็คนักเรียนมาสาย</h1>
+                <p>กรุณาเข้าสู่ระบบเพื่อดำเนินการต่อ</p>
+            </div>
+            
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="pin">🔑 รหัสผ่าน</label>
+                    <input 
+                        type="password" 
+                        id="pin" 
+                        name="pin" 
+                        placeholder="กรอกรหัสผ่าน"
+                        autocomplete="off"
+                        required
+                        autofocus
+                    >
+                </div>
+                
+                <div class="error-message" id="errorMessage" style="display: none;">
+                    ❌ รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block">
+                    🔓 เข้าสู่ระบบ
+                </button>
+            </form>
+            
+            <div class="login-footer">
+                <small>ระบบเช็คนักเรียนมาสาย © 2568</small>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Check if already logged in
+        if (isAuthenticated()) {
+            window.location.href = 'dashboard.html';
+        }
+
+        // Handle login form
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const pin = document.getElementById('pin').value;
+            const errorMessage = document.getElementById('errorMessage');
+            
+            if (login(pin)) {
+                window.location.href = 'dashboard.html';
+            } else {
+                errorMessage.style.display = 'block';
+                document.getElementById('pin').value = '';
+                document.getElementById('pin').focus();
+                
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
