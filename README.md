@@ -36,7 +36,7 @@ Google Apps Script Backend สำหรับระบบเช็คนัก�
 
 ### Base URL
 ```
-https://script.google.com/macros/s/AKfycbwx_CQ4lzfNbXYq8e4wky7gdjef4ZIQm9j5XOQaLWYb5MpVLz4MyES5TdR9CGZx77kIBA/exec
+https://script.google.com/macros/s/AKfycbxlOLEiNlqv8WPrEzPm455-He-F-Dbzvg2trLaj90KIvN48VAXHr03fJHwdllF2_9x0Ew/exec
 ```
 
 ---
@@ -256,12 +256,12 @@ Content-Type: application/json
 
 ### ใช้ Browser (GET only)
 ```
-https://script.google.com/macros/s/AKfycbwx_CQ4lzfNbXYq8e4wky7gdjef4ZIQm9j5XOQaLWYb5MpVLz4MyES5TdR9CGZx77kIBA/exec?path=students
+https://script.google.com/macros/s/AKfycbxlOLEiNlqv8WPrEzPm455-He-F-Dbzvg2trLaj90KIvN48VAXHr03fJHwdllF2_9x0Ew/exec?path=students
 ```
 
 ### ใช้ JavaScript Fetch
 ```javascript
-const API_URL = 'https://script.google.com/macros/s/AKfycbwx_CQ4lzfNbXYq8e4wky7gdjef4ZIQm9j5XOQaLWYb5MpVLz4MyES5TdR9CGZx77kIBA/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbxlOLEiNlqv8WPrEzPm455-He-F-Dbzvg2trLaj90KIvN48VAXHr03fJHwdllF2_9x0Ew/exec';
 
 // GET Example
 fetch(API_URL + '?path=students&class_room=4/2')

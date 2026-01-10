@@ -6,7 +6,7 @@ let lateSummary = [];
 
 // Load dashboard data
 async function loadDashboard() {
-  showLoading();
+  showLoading('loadingSpinner', '🏫 กำลังโหลดข้อมูลห้องเรียน...');
   
   try {
     // Fetch students and late summary
@@ -26,7 +26,7 @@ async function loadDashboard() {
     renderClassrooms();
   } catch (error) {
     console.error('Error loading dashboard:', error);
-    showNotification('เกิดข้อผิดพลาดในการโหลดข้อมูล', 'error');
+    showNotification('❌ เกิดข้อผิดพลาดในการโหลดข้อมูล', 'error');
   } finally {
     hideLoading();
   }

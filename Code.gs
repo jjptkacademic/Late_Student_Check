@@ -41,8 +41,17 @@ function doGet(e) {
       case 'student':
         result = getStudentById(params.id);
         break;
+      case 'add-late-record':
+        result = addLateRecord(params);
+        break;
+      case 'add-student':
+        result = addStudent(params);
+        break;
+      case 'delete-late-record':
+        result = deleteLateRecord(params);
+        break;
       default:
-        result = { error: 'Invalid endpoint', availableEndpoints: ['students', 'late-records', 'late-summary', 'student'] };
+        result = { error: 'Invalid endpoint', availableEndpoints: ['students', 'late-records', 'late-summary', 'student', 'add-late-record', 'add-student', 'delete-late-record'] };
     }
     
     return createResponse(result);
@@ -184,13 +193,17 @@ function getLateRecords(params) {
   
   // กรองตามวันที่
   if (params.date_from) {
-    const fromDate = new Date(params.date_from);
-    records = records.filter(r => new Date(r.late_date) >= fromDate);
+    records = records.filter(r => {
+      const recordDate = formatDateToString(r.late_date);
+      return recordDate >= params.date_from;
+    });
   }
   
   if (params.date_to) {
-    const toDate = new Date(params.date_to);
-    records = records.filter(r => new Date(r.late_date) <= toDate);
+    records = records.filter(r => {
+      const recordDate = formatDateToString(r.late_date);
+      return recordDate <= params.date_to;
+    });
   }
   
   return {
@@ -363,13 +376,93 @@ function addStudent(data) {
 }
 
 /**
- * สร้าง Response แบบ JSON
+ * สร้าง Response แบบ JSON พร้อม CORS headers
  */
 function createResponse(data, statusCode = 200) {
   const output = JSON.stringify(data);
   return ContentService
     .createTextOutput(output)
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+/**
+ * Handle OPTIONS request for CORS preflight
+ */
+function doOptions(e) {
+  return ContentService
+    .createTextOutput('')
+    .setMimeType(ContentService.MimeType.TEXT);
+}
+
+/**
+ * DELETE /delete-late-record - ลบบันทึกการมาสาย
+ * Query params: { late_id }
+ */
+function deleteLateRecord(params) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME.LATE_RECORDS);
+  
+  // Validate required fields
+  if (!params.late_id) {
+    return { success: false, error: 'late_id is required' };
+  }
+  
+  const lateId = parseInt(params.late_id);
+  const data = sheet.getDataRange().getValues();
+  
+  // Find row with late_id
+  let rowToDelete = -1;
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0] == lateId) {
+      rowToDelete = i + 1; // +1 เพราะ sheet index เริ่มที่ 1
+      break;
+    }
+  }
+  
+  if (rowToDelete === -1) {
+    return { success: false, error: 'Late record not found' };
+  }
+  
+  // ลบแถว
+  sheet.deleteRow(rowToDelete);
+  
+  return {
+    success: true,
+    message: 'Late record deleted successfully',
+    late_id: lateId
+  };
+}
+
+/**
+ * Helper: แปลงวันที่เป็น String YYYY-MM-DD
+ */
+function formatDateToString(dateValue) {
+  if (!dateValue) return '';
+  
+  // ถ้าเป็น Date object แล้ว
+  if (dateValue instanceof Date) {
+    const year = dateValue.getFullYear();
+    const month = String(dateValue.getMonth() + 1).padStart(2, '0');
+    const day = String(dateValue.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+  
+  // ถ้าเป็น string อยู่แล้ว
+  if (typeof dateValue === 'string') {
+    // ถ้าเป็นรูปแบบ YYYY-MM-DD อยู่แล้ว
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
+      return dateValue;
+    }
+    // ลองแปลงเป็น Date แล้วแปลงกลับ
+    const d = new Date(dateValue);
+    if (!isNaN(d.getTime())) {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+  }
+  
+  return String(dateValue);
 }
 
 /**

@@ -9,7 +9,7 @@ let currentFilter = {
 
 // Load stats page
 async function loadStats() {
-  showLoading();
+  showLoading('loadingSpinner', '📊 กำลังโหลดสถิติ...');
   
   try {
     await Promise.all([
@@ -20,7 +20,7 @@ async function loadStats() {
     renderStats();
   } catch (error) {
     console.error('Error loading stats:', error);
-    showNotification('เกิดข้อผิดพลาดในการโหลดข้อมูล', 'error');
+    showNotification('❌ เกิดข้อผิดพลาดในการโหลดข้อมูล', 'error');
   } finally {
     hideLoading();
   }
@@ -170,7 +170,7 @@ async function showStudentDetail(student) {
   
   // Load and show late history
   const historyList = document.getElementById('detailHistory');
-  historyList.innerHTML = '<p style="text-align: center;">กำลังโหลด...</p>';
+  historyList.innerHTML = '<p style="text-align: center;">⏳ กำลังโหลดประวัติ...</p>';
   
   modal.style.display = 'flex';
   
@@ -183,10 +183,13 @@ async function showStudentDetail(student) {
       response.data.forEach(record => {
         const item = document.createElement('div');
         item.className = 'history-item';
+        
+        const displayTime = formatTime(record.late_time);
+        
         item.innerHTML = `
           <div>
             <span class="history-date">📅 ${formatDateThai(record.late_date)}</span>
-            <span class="history-time">⏰ ${record.late_time || '-'}</span>
+            <span class="history-time">⏰ ${displayTime}</span>
           </div>
           ${record.reason ? `<div class="history-reason">💬 ${record.reason}</div>` : ''}
         `;
@@ -197,7 +200,7 @@ async function showStudentDetail(student) {
     }
   } catch (error) {
     console.error('Error loading history:', error);
-    historyList.innerHTML = '<p style="text-align: center; color: var(--color-danger);">เกิดข้อผิดพลาดในการโหลดข้อมูล</p>';
+    historyList.innerHTML = '<p style="text-align: center; color: var(--color-danger);">❌ เกิดข้อผิดพลาดในการโหลดข้อมูล</p>';
   }
 }
 

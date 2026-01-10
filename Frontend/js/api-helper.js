@@ -50,14 +50,33 @@ const API = {
     }
   },
 
+  // DELETE: ลบบันทึกการมาสาย
+  async deleteLateRecord(lateId) {
+    try {
+      const params = new URLSearchParams({
+        path: 'delete-late-record',
+        late_id: lateId
+      });
+      const response = await fetch(`${API_URL}?${params}`);
+      return await response.json();
+    } catch (error) {
+      console.error('Error deleting late record:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
   // POST: บันทึกการมาสาย
   async addLateRecord(data) {
     try {
-      const response = await fetch(`${API_URL}?path=late-record`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+      // ใช้ GET แทน POST เพื่อหลีกเลี่ยง CORS
+      const params = new URLSearchParams({
+        path: 'add-late-record',
+        student_id: data.student_id,
+        late_date: data.late_date || '',
+        late_time: data.late_time || '',
+        reason: data.reason || ''
       });
+      const response = await fetch(`${API_URL}?${params}`);
       return await response.json();
     } catch (error) {
       console.error('Error adding late record:', error);
@@ -68,11 +87,16 @@ const API = {
   // POST: เพิ่มนักเรียนใหม่
   async addStudent(data) {
     try {
-      const response = await fetch(`${API_URL}?path=student`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+      // ใช้ GET แทน POST เพื่อหลีกเลี่ยง CORS
+      const params = new URLSearchParams({
+        path: 'add-student',
+        student_code: data.student_code,
+        first_name: data.first_name,
+        last_name: data.last_name,
+        class_room: data.class_room || '',
+        grade_level: data.grade_level || ''
       });
+      const response = await fetch(`${API_URL}?${params}`);
       return await response.json();
     } catch (error) {
       console.error('Error adding student:', error);

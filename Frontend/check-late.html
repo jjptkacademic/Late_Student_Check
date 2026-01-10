@@ -59,8 +59,21 @@
                     <p>กำลังโหลดข้อมูล...</p>
                 </div>
 
-                <div id="studentsList" class="students-list">
-                    <!-- Students checkboxes loaded here -->
+                <div id="studentsList" class="students-table-container">
+                    <table class="students-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 60px;">ลำดับ</th>
+                                <th style="width: 100px;">รหัส</th>
+                                <th style="width: 250px;">ชื่อ - นามสกุล</th>
+                                <th style="width: 80px; text-align: center;">มาสาย</th>
+                                <th>สาเหตุ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTableBody">
+                            <!-- Students rows loaded here -->
+                        </tbody>
+                    </table>
                 </div>
 
                 <div class="selection-info" id="selectionInfo" style="display: none;">
@@ -83,28 +96,12 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label for="lateTime">⏰ เวลาที่มาสาย</label>
+                    <label for="lateTime">⏰ เวลาที่มาสาย (ใช้สำหรับทุกคนที่เลือก)</label>
                     <input type="time" id="lateTime" class="form-input">
-                    <button id="copyTimeBtn" class="btn btn-sm btn-outline">📋 คัดลอกเวลาให้ทุกคน</button>
                 </div>
-                <div class="form-group">
-                    <label for="lateReason">💬 เหตุผลการมาสาย</label>
-                    <select id="lateReason" class="form-select">
-                        <option value="">-- เลือกเหตุผล --</option>
-                        <option value="รถติด">รถติด</option>
-                        <option value="ตื่นสาย">ตื่นสาย</option>
-                        <option value="ธุระส่วนตัว">ธุระส่วนตัว</option>
-                        <option value="ป่วย">ป่วย</option>
-                        <option value="other">อื่นๆ (พิมพ์เอง)</option>
-                    </select>
-                    <input 
-                        type="text" 
-                        id="customReason" 
-                        class="form-input" 
-                        placeholder="ระบุเหตุผล..."
-                        style="display: none; margin-top: 0.5rem;"
-                    >
-                </div>
+                <p style="font-size: var(--font-sm); color: var(--color-text-light);">
+                    💡 <strong>หมายเหตุ:</strong> สาเหตุการมาสายสามารถระบุได้ในตารางด้านบน
+                </p>
             </div>
             <div class="modal-footer">
                 <button id="confirmSaveBtn" class="btn btn-primary">✅ ยืนยันการบันทึก</button>

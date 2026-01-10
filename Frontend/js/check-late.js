@@ -21,18 +21,17 @@ async function loadPage() {
     return;
   }
   
-  showLoading();
+  showLoading('loadingSpinner', '📚 กำลังโหลดข้อมูลห้องเรียน...');
   startClock();
   
   try {
-    await Promise.all([
-      loadStudents(),
-      loadTodayRecords(),
-      loadClassrooms()
-    ]);
+    // Load students first, then late records (sequential)
+    await loadStudents();
+    await loadClassrooms();
+    await loadTodayRecords(); // Load after students loaded
   } catch (error) {
     console.error('Error loading page:', error);
-    showNotification('เกิดข้อผิดพลาดในการโหลดข้อมูล', 'error');
+    showNotification('❌ เกิดข้อผิดพลาดในการโหลดข้อมูล', 'error');
   } finally {
     hideLoading();
   }
@@ -44,7 +43,8 @@ async function loadStudents() {
   
   if (response.success) {
     allStudents = response.data;
-    renderStudentsList(allStudents);
+    console.log('Students loaded:', allStudents); // Debug
+    // Don't render yet, wait for todayRecords
   }
 }
 
@@ -56,12 +56,30 @@ async function loadTodayRecords() {
     date_to: today
   });
   
-  if (response.success) {
+  console.log('Today records response:', response); // Debug
+  
+  if (response.success && response.data) {
+    // Filter records for current class
     todayRecords = response.data.filter(r => {
-      const student = allStudents.find(s => s.student_id === r.student_id);
+      const student = allStudents.find(s => s.student_id == r.student_id);
+      console.log(`Checking record: student_id=${r.student_id}, found=${!!student}`); // Debug
       return student && student.class_room === currentClass;
     });
+    console.log('Filtered today records:', todayRecords); // Debug
     renderTodayRecords();
+    
+    // Re-render students list with updated todayRecords
+    if (allStudents.length > 0) {
+      renderStudentsList(allStudents);
+    }
+  } else {
+    todayRecords = [];
+    renderTodayRecords();
+    
+    // Still render students even if no late records
+    if (allStudents.length > 0) {
+      renderStudentsList(allStudents);
+    }
   }
 }
 
@@ -77,23 +95,109 @@ async function loadClassrooms() {
 
 // Render students list with checkboxes
 function renderStudentsList(students) {
-  const list = document.getElementById('studentsList');
-  list.innerHTML = '';
+  const tbody = document.getElementById('studentsTableBody');
+  tbody.innerHTML = '';
   
-  students.forEach(student => {
-    const item = Components.createStudentCheckbox(student);
-    const checkbox = item.querySelector('input[type="checkbox"]');
+  // Get list of student IDs who are already late today
+  const lateStudentIds = new Set(todayRecords.map(r => r.student_id));
+  
+  students.forEach((student, index) => {
+    const tr = document.createElement('tr');
+    tr.dataset.studentId = student.student_id;
     
-    checkbox.addEventListener('change', function() {
-      if (this.checked) {
-        selectedStudents.add(parseInt(this.value));
-      } else {
-        selectedStudents.delete(parseInt(this.value));
-      }
-      updateSelectionInfo();
+    const isAlreadyLate = lateStudentIds.has(student.student_id);
+    
+    // Add class if already late
+    if (isAlreadyLate) {
+      tr.classList.add('already-late');
+    }
+    
+    // Column 1: ลำดับ
+    const tdOrder = document.createElement('td');
+    tdOrder.className = 'student-order';
+    tdOrder.textContent = index + 1;
+    
+    // Column 2: รหัสนักเรียน
+    const tdCode = document.createElement('td');
+    tdCode.innerHTML = `<span class="student-code">${student.student_code}</span>`;
+    
+    // Column 3: ชื่อ - นามสกุล
+    const tdName = document.createElement('td');
+    tdName.innerHTML = `<span class="student-name">${student.first_name} ${student.last_name}</span>`;
+    
+    // Column 4: Checkbox มาสาย
+    const tdCheckbox = document.createElement('td');
+    tdCheckbox.className = 'student-checkbox';
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = `student-${student.student_id}`;
+    checkbox.value = student.student_id;
+    checkbox.disabled = isAlreadyLate; // Disable if already late
+    
+    if (isAlreadyLate) {
+      // Show checkmark instead
+      tdCheckbox.innerHTML = '<span style="color: var(--color-success); font-size: 1.2rem;">✓</span>';
+    } else {
+      checkbox.addEventListener('change', function() {
+        if (this.checked) {
+          selectedStudents.add(parseInt(this.value));
+          tr.classList.add('checked');
+          reasonSelect.disabled = false;
+        } else {
+          selectedStudents.delete(parseInt(this.value));
+          tr.classList.remove('checked');
+          reasonSelect.disabled = true;
+          reasonSelect.value = 'อื่นๆ';
+        }
+        updateSelectionInfo();
+      });
+      tdCheckbox.appendChild(checkbox);
+    }
+    
+    // Column 5: สาเหตุ (Combo box)
+    const tdReason = document.createElement('td');
+    const reasonSelect = document.createElement('select');
+    reasonSelect.className = 'reason-select';
+    reasonSelect.disabled = isAlreadyLate || true; // Disabled by default
+    reasonSelect.dataset.studentId = student.student_id;
+    
+    // Add options
+    const reasons = [
+      'อื่นๆ',
+      'รถติด',
+      'ตื่นสาย',
+      'ธุระส่วนตัว',
+      'ป่วย',
+      'ไปโรงพยาบาล',
+      'รถเสีย'
+    ];
+    
+    reasons.forEach(reason => {
+      const option = document.createElement('option');
+      option.value = reason;
+      option.textContent = reason;
+      reasonSelect.appendChild(option);
     });
     
-    list.appendChild(item);
+    // Set default value or show existing reason
+    if (isAlreadyLate) {
+      const existingRecord = todayRecords.find(r => r.student_id == student.student_id);
+      if (existingRecord && existingRecord.reason) {
+        reasonSelect.value = existingRecord.reason;
+      }
+    } else {
+      reasonSelect.value = 'อื่นๆ';
+    }
+    
+    tdReason.appendChild(reasonSelect);
+    
+    tr.appendChild(tdOrder);
+    tr.appendChild(tdCode);
+    tr.appendChild(tdName);
+    tr.appendChild(tdCheckbox);
+    tr.appendChild(tdReason);
+    
+    tbody.appendChild(tr);
   });
 }
 
@@ -103,7 +207,7 @@ function renderTodayRecords() {
   const list = document.getElementById('todayRecordsList');
   const count = document.getElementById('todayCount');
   
-  if (todayRecords.length === 0) {
+  if (!todayRecords || todayRecords.length === 0) {
     section.style.display = 'none';
     return;
   }
@@ -113,9 +217,27 @@ function renderTodayRecords() {
   list.innerHTML = '';
   
   todayRecords.forEach(record => {
-    const student = allStudents.find(s => s.student_id === record.student_id);
+    const student = allStudents.find(s => s.student_id == record.student_id);
     if (student) {
-      const item = Components.createTodayRecord(record, student);
+      const item = document.createElement('div');
+      item.className = 'today-record-item';
+      
+      // Format time properly
+      const displayTime = formatTime(record.late_time);
+      
+      item.innerHTML = `
+        <div class="record-student">
+          ⚠️ <strong>${student.student_code}</strong> ${student.first_name} ${student.last_name}
+        </div>
+        <div class="record-info">
+          <span>⏰ ${displayTime}</span>
+          ${record.reason ? `<span class="record-reason">💬 ${record.reason}</span>` : ''}
+        </div>
+        <div class="record-actions">
+          <button class="btn btn-sm btn-outline" onclick="deleteLateRecord(${record.late_id})">🗑️ ลบ</button>
+        </div>
+      `;
+      
       list.appendChild(item);
     }
   });
@@ -171,7 +293,7 @@ async function saveLateRecords() {
     return;
   }
   
-  // Show modal for time and reason
+  // Show modal for time
   showLateFormModal();
 }
 
@@ -179,26 +301,11 @@ async function saveLateRecords() {
 function showLateFormModal() {
   const modal = document.getElementById('lateFormModal');
   const timeInput = document.getElementById('lateTime');
-  const reasonSelect = document.getElementById('lateReason');
-  const customReason = document.getElementById('customReason');
   
   // Set current time as default
   timeInput.value = getCurrentTime();
-  reasonSelect.value = '';
-  customReason.style.display = 'none';
-  customReason.value = '';
   
   modal.style.display = 'flex';
-  
-  // Handle reason select change
-  reasonSelect.onchange = function() {
-    if (this.value === 'other') {
-      customReason.style.display = 'block';
-      customReason.focus();
-    } else {
-      customReason.style.display = 'none';
-    }
-  };
 }
 
 // Hide late form modal
@@ -209,30 +316,33 @@ function hideLateFormModal() {
 // Confirm and save
 async function confirmSave() {
   const timeInput = document.getElementById('lateTime');
-  const reasonSelect = document.getElementById('lateReason');
-  const customReason = document.getElementById('customReason');
-  
   const time = timeInput.value;
-  let reason = reasonSelect.value === 'other' ? customReason.value : reasonSelect.value;
   
   if (!time) {
-    showNotification('กรุณาระบุเวลา', 'warning');
+    showNotification('⚠️ กรุณาระบุเวลา', 'warning');
     return;
   }
   
-  showLoading();
+  // Hide modal first
+  hideLateFormModal();
+  
+  showLoading('loadingSpinner', '💾 กำลังบันทึกข้อมูล...');
   
   try {
     const date = getCurrentDate();
     const promises = [];
     
+    // Get reasons from table
     for (const studentId of selectedStudents) {
+      const reasonSelect = document.querySelector(`select.reason-select[data-student-id="${studentId}"]`);
+      const reason = reasonSelect ? reasonSelect.value : 'อื่นๆ';
+      
       promises.push(
         API.addLateRecord({
           student_id: studentId,
           late_date: date,
           late_time: time,
-          reason: reason || ''
+          reason: reason
         })
       );
     }
@@ -241,22 +351,19 @@ async function confirmSave() {
     const successCount = results.filter(r => r.success).length;
     
     if (successCount > 0) {
-      showNotification(`บันทึกสำเร็จ ${successCount} คน`, 'success');
+      showNotification(`✅ บันทึกสำเร็จ ${successCount} คน`, 'success');
       
       // Clear selection
       clearSelection();
       
       // Reload today's records
       await loadTodayRecords();
-      
-      // Hide modal
-      hideLateFormModal();
     } else {
-      showNotification('เกิดข้อผิดพลาดในการบันทึก', 'error');
+      showNotification('❌ เกิดข้อผิดพลาดในการบันทึก', 'error');
     }
   } catch (error) {
     console.error('Error saving late records:', error);
-    showNotification('เกิดข้อผิดพลาดในการบันทึก', 'error');
+    showNotification('❌ เกิดข้อผิดพลาดในการบันทึก', 'error');
   } finally {
     hideLoading();
   }
@@ -265,11 +372,42 @@ async function confirmSave() {
 // Clear selection
 function clearSelection() {
   selectedStudents.clear();
-  document.querySelectorAll('#studentsList input[type="checkbox"]').forEach(cb => {
-    cb.checked = false;
-    cb.closest('.student-checkbox-item').classList.remove('checked');
+  document.querySelectorAll('#studentsTableBody tr').forEach(tr => {
+    const cb = tr.querySelector('input[type="checkbox"]');
+    const reasonSelect = tr.querySelector('.reason-select');
+    if (cb) cb.checked = false;
+    if (reasonSelect) {
+      reasonSelect.disabled = true;
+      reasonSelect.value = 'อื่นๆ';
+    }
+    tr.classList.remove('checked');
   });
   updateSelectionInfo();
+}
+
+// Delete late record
+async function deleteLateRecord(lateId) {
+  if (!confirm('ต้องการลบบันทึกนี้หรือไม่?')) {
+    return;
+  }
+  
+  showLoading('loadingSpinner', '🗑️ กำลังลบบันทึก...');
+  
+  try {
+    const response = await API.deleteLateRecord(lateId);
+    
+    if (response.success) {
+      showNotification('✅ ลบบันทึกสำเร็จ', 'success');
+      await loadTodayRecords();
+    } else {
+      showNotification('❌ ลบบันทึกไม่สำเร็จ: ' + (response.error || 'Unknown error'), 'error');
+    }
+  } catch (error) {
+    console.error('Error deleting record:', error);
+    showNotification('❌ เกิดข้อผิดพลาดในการลบบันทึก', 'error');
+  } finally {
+    hideLoading();
+  }
 }
 
 // Event Listeners

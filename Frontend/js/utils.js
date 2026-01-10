@@ -15,6 +15,13 @@ function formatDateThai(date) {
 
 // Format time to HH:MM
 function formatTime(date) {
+  // ถ้าเป็น string ที่เป็นเวลาอยู่แล้ว (HH:MM หรือ HH:MM:SS)
+  if (typeof date === 'string') {
+    if (/^\d{2}:\d{2}(:\d{2})?$/.test(date)) {
+      return date.substring(0, 5); // เอาแค่ HH:MM
+    }
+  }
+  
   const d = new Date(date);
   const hours = String(d.getHours()).padStart(2, '0');
   const minutes = String(d.getMinutes()).padStart(2, '0');
@@ -49,9 +56,15 @@ function debounce(func, wait) {
 }
 
 // Show loading spinner
-function showLoading(elementId = 'loadingSpinner') {
+function showLoading(elementId = 'loadingSpinner', message = 'กำลังโหลดข้อมูล...') {
   const spinner = document.getElementById(elementId);
-  if (spinner) spinner.style.display = 'flex';
+  if (spinner) {
+    const messageElement = spinner.querySelector('p');
+    if (messageElement) {
+      messageElement.textContent = message;
+    }
+    spinner.style.display = 'flex';
+  }
 }
 
 // Hide loading spinner

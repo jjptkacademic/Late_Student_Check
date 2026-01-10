@@ -42,15 +42,13 @@
   border: 1px solid var(--color-late);
   border-radius: var(--radius-md);
   padding: var(--space-md);
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
   align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-sm);
+  gap: var(--space-md);
 }
 
 .record-student {
-  flex: 1;
   min-width: 200px;
 }
 
@@ -64,12 +62,21 @@
   align-items: center;
   font-size: var(--font-sm);
   color: var(--color-text-light);
+  min-width: 300px;
 }
 
 .record-reason {
   font-size: var(--font-sm);
   color: var(--color-text-light);
   font-style: italic;
+  display: inline-block;
+  min-width: 100px;
+}
+
+.record-actions {
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: flex-end;
 }
 
 .check-late-section {
@@ -83,45 +90,67 @@
   margin-bottom: var(--space-lg);
 }
 
-.students-list {
-  max-height: 500px;
+.students-table-container {
+  max-height: 600px;
   overflow-y: auto;
   margin-bottom: var(--space-lg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  padding: var(--space-sm);
 }
 
-.student-checkbox-item {
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
+.students-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.students-table thead {
+  background-color: var(--color-primary);
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.students-table th {
   padding: var(--space-md);
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-md);
-  margin-bottom: var(--space-sm);
-  cursor: pointer;
-  transition: all var(--transition-base);
+  text-align: left;
+  font-weight: var(--font-semibold);
+  font-size: var(--font-sm);
+  border-bottom: 2px solid var(--color-primary-dark);
+  white-space: nowrap;
 }
 
-.student-checkbox-item:hover {
-  border-color: var(--color-primary);
+.students-table tbody tr {
+  border-bottom: 1px solid var(--color-border);
+  transition: background-color var(--transition-base);
+}
+
+.students-table tbody tr:hover {
   background-color: var(--color-bg);
 }
 
-.student-checkbox-item input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-}
-
-.student-checkbox-item.checked {
-  border-color: var(--color-primary);
+.students-table tbody tr.checked {
   background-color: rgba(59, 130, 246, 0.1);
 }
 
-.student-info-text {
-  flex: 1;
+.students-table tbody tr.already-late {
+  background-color: var(--color-late-bg);
+  opacity: 0.7;
+}
+
+.students-table tbody tr.already-late td {
+  color: var(--color-text-light);
+}
+
+.students-table td {
+  padding: var(--space-sm) var(--space-md);
+  vertical-align: middle;
+}
+
+.student-order {
+  font-weight: var(--font-semibold);
+  color: var(--color-text-light);
+  text-align: center;
 }
 
 .student-code {
@@ -131,7 +160,41 @@
 
 .student-name {
   color: var(--color-text);
-  margin-left: var(--space-sm);
+}
+
+.student-checkbox {
+  display: flex;
+  justify-content: center;
+}
+
+.student-checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.reason-input,
+.reason-select {
+  width: 100%;
+  padding: var(--space-xs) var(--space-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-sm);
+  transition: border-color var(--transition-base);
+  background-color: var(--color-surface);
+}
+
+.reason-input:focus,
+.reason-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.reason-input:disabled,
+.reason-select:disabled {
+  background-color: var(--color-bg);
+  cursor: not-allowed;
+  color: var(--color-text-lighter);
 }
 
 .selection-info {

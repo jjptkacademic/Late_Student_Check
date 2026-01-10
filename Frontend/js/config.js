@@ -1,7 +1,7 @@
 // Configuration
 const CONFIG = {
   // API Configuration
-  API_URL: 'https://script.google.com/macros/s/AKfycbyCg4YURWkZj01-wUI8psbwlNVGSHD4qW1NGEuDOgUF-meMsvbprCRsqxqvwv2X7OfLrg/exec',
+  API_URL: 'https://script.google.com/macros/s/AKfycby5Lhe_yOUgV-FeRMLyfr_BKi8FTpeWn6McenG6bfY4K-otdj_FvehoHakQIJ8p7Uo10A/exec',
   
   // Authentication
   AUTH_PIN: '1234', // เปลี่ยนรหัสผ่านตรงนี้
