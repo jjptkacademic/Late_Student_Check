@@ -93,74 +93,141 @@
   box-shadow: var(--shadow-md);
 }
 
-.ranking-list {
+.ranking-header {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-lg);
+  gap: var(--space-lg);
+  flex-wrap: wrap;
 }
 
-.ranking-item {
+.ranking-header h2 {
+  margin: 0;
+}
+
+.ranking-controls {
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.control-group {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: var(--space-md);
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all var(--transition-base);
+  gap: var(--space-xs);
+  font-size: var(--font-sm);
 }
 
-.ranking-item:hover {
-  border-color: var(--color-primary);
+.control-group label {
+  font-weight: var(--font-medium);
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.control-group input[type="range"] {
+  width: 120px;
+}
+
+.control-group #minTimesValue {
+  font-weight: var(--font-bold);
+  color: var(--color-primary);
+  min-width: 20px;
+  text-align: center;
+}
+
+.btn-small {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: var(--font-lg);
+  font-weight: var(--font-bold);
+  transition: background-color var(--transition-base);
+}
+
+.btn-small:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.btn-small:active {
+  transform: scale(0.95);
+}
+
+.ranking-table-container {
+  overflow-x: auto;
+  margin-top: var(--space-md);
+}
+
+.ranking-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--color-surface);
+}
+
+.ranking-table thead {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.ranking-table th {
+  padding: var(--space-md);
+  text-align: left;
+  font-weight: var(--font-semibold);
+  border: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.ranking-table tbody tr {
+  cursor: pointer;
+  transition: background-color var(--transition-base);
+}
+
+.ranking-table tbody tr:hover {
   background-color: var(--color-bg);
 }
 
-.ranking-item.top-1 {
-  border-color: #ffd700;
-  background-color: #fffbeb;
+.ranking-table tbody tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.02);
 }
 
-.ranking-item.top-2 {
-  border-color: #c0c0c0;
-  background-color: #f9fafb;
+.ranking-table td {
+  padding: var(--space-md);
+  border: 1px solid var(--color-border);
 }
 
-.ranking-item.top-3 {
-  border-color: #cd7f32;
-  background-color: #fef3c7;
-}
-
-.ranking-left {
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
-  flex: 1;
-}
-
-.ranking-rank {
-  font-size: var(--font-xl);
+.ranking-table td:first-child {
+  text-align: center;
   font-weight: var(--font-bold);
-  min-width: 30px;
-}
-
-.ranking-student {
-  flex: 1;
-}
-
-.ranking-name {
-  font-weight: var(--font-semibold);
-  color: var(--color-text);
-}
-
-.ranking-class {
-  font-size: var(--font-sm);
   color: var(--color-text-light);
 }
 
-.ranking-count {
-  font-size: var(--font-xl);
+.ranking-table td:nth-child(2) {
+  font-family: monospace;
+  color: var(--color-primary);
+  font-weight: var(--font-medium);
+  white-space: nowrap;
+}
+
+.ranking-table td:last-child {
+  text-align: center;
   font-weight: var(--font-bold);
   color: var(--color-danger);
+  font-size: var(--font-lg);
+}
+
+.no-data {
+  text-align: center;
+  padding: var(--space-2xl);
+  color: var(--color-text-light);
+  font-size: var(--font-lg);
 }
 
 .chart-section {

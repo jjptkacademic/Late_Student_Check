@@ -93,29 +93,52 @@ function renderOverview() {
 }
 
 // Render ranking
+let rankingFilters = {
+  minTimes: 1,
+  limit: 10
+};
+
 function renderRanking() {
-  const list = document.getElementById('rankingList');
-  if (!list) return; // Skip if element doesn't exist
+  const tbody = document.getElementById('rankingTableBody');
+  const noDataMsg = document.getElementById('noDataMessage');
   
-  list.innerHTML = '';
+  if (!tbody) return; // Skip if element doesn't exist
   
-  // Sort by total_late descending
-  const sorted = [...lateSummary]
-    .filter(s => s.total_late > 0)
-    .sort((a, b) => b.total_late - a.total_late)
-    .slice(0, 10);
+  tbody.innerHTML = '';
   
-  sorted.forEach((student, index) => {
-    const rank = index + 1;
-    const item = Components.createRankingItem(rank, student, () => {
-      showStudentDetail(student);
-    });
-    list.appendChild(item);
-  });
+  // Filter and sort by total_late descending
+  const filtered = [...lateSummary]
+    .filter(s => s.total_late >= rankingFilters.minTimes)
+    .sort((a, b) => b.total_late - a.total_late);
   
-  if (sorted.length === 0) {
-    list.innerHTML = '<p style="text-align: center; color: var(--color-text-light); padding: var(--space-lg);">ไม่มีข้อมูลการมาสาย</p>';
+  // Apply limit
+  const limited = rankingFilters.limit === 'all' 
+    ? filtered 
+    : filtered.slice(0, parseInt(rankingFilters.limit));
+  
+  if (limited.length === 0) {
+    tbody.style.display = 'none';
+    noDataMsg.style.display = 'block';
+    return;
   }
+  
+  tbody.style.display = '';
+  noDataMsg.style.display = 'none';
+  
+  limited.forEach((student, index) => {
+    const tr = document.createElement('tr');
+    tr.onclick = () => showStudentDetail(student);
+    
+    tr.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${student.student_code}</td>
+      <td>${student.first_name} ${student.last_name}</td>
+      <td>${student.class_room}</td>
+      <td>${student.total_late} ครั้ง</td>
+    `;
+    
+    tbody.appendChild(tr);
+  });
 }
 
 // Render chart
@@ -249,24 +272,44 @@ async function refreshStats() {
   await loadStats();
 }
 
-// Export to Excel (simple CSV for now)
-function exportToExcel() {
-  const sorted = [...lateSummary]
-    .filter(s => s.total_late > 0)
+// Copy stats as text
+function copyStatsAsText() {
+  const filtered = [...lateSummary]
+    .filter(s => s.total_late >= rankingFilters.minTimes)
     .sort((a, b) => b.total_late - a.total_late);
   
-  let csv = 'อันดับ,รหัสนักเรียน,ชื่อ,นามสกุล,ห้อง,จำนวนครั้ง\n';
+  const limited = rankingFilters.limit === 'all' 
+    ? filtered 
+    : filtered.slice(0, parseInt(rankingFilters.limit));
   
-  sorted.forEach((student, index) => {
-    csv += `${index + 1},${student.student_code},${student.first_name},${student.last_name},${student.class_room},${student.total_late}\n`;
+  if (limited.length === 0) {
+    showNotification('❌ ไม่มีข้อมูลให้คัดลอก', 'error');
+    return;
+  }
+  
+  // Create text format
+  const today = new Date();
+  const thaiDate = formatDateThai(today);
+  
+  let text = `📊 ระบบเช็คมาสาย\n`;
+  text += `สถิติมาสาย วันที่ ${thaiDate}\n`;
+  text += `(มาสายมากกว่า ${rankingFilters.minTimes} ครั้ง)\n`;
+  text += `${'='.repeat(60)}\n\n`;
+  
+  limited.forEach((student, index) => {
+    text += `${index + 1}. ${student.first_name} ${student.last_name} - ห้อง ${student.class_room} - มาสาย ${student.total_late} ครั้ง\n`;
   });
   
-  // Create download link
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = `สถิติการมาสาย_${getCurrentDate()}.csv`;
-  link.click();
+  text += `\n${'='.repeat(60)}\n`;
+  text += `รวมทั้งหมด ${limited.length} คน`;
+  
+  // Copy to clipboard
+  navigator.clipboard.writeText(text).then(() => {
+    showNotification('✅ คัดลอกข้อความสำเร็จ', 'success');
+  }).catch(err => {
+    console.error('Copy failed:', err);
+    showNotification('❌ ไม่สามารถคัดลอกได้', 'error');
+  });
 }
 
 // Print stats
@@ -298,11 +341,53 @@ document.addEventListener('DOMContentLoaded', function() {
     // TODO: Implement period filtering with date ranges
   });
   
+  // Min times slider
+  document.getElementById('minTimesFilter')?.addEventListener('input', function() {
+    rankingFilters.minTimes = parseInt(this.value);
+    document.getElementById('minTimesValue').textContent = this.value;
+    renderRanking();
+  });
+  
+  // Decrease button
+  document.getElementById('decreaseBtn')?.addEventListener('click', function() {
+    const slider = document.getElementById('minTimesFilter');
+    const currentValue = parseInt(slider.value);
+    if (currentValue > parseInt(slider.min)) {
+      slider.value = currentValue - 1;
+      rankingFilters.minTimes = currentValue - 1;
+      document.getElementById('minTimesValue').textContent = slider.value;
+      renderRanking();
+    }
+  });
+  
+  // Increase button
+  document.getElementById('increaseBtn')?.addEventListener('click', function() {
+    const slider = document.getElementById('minTimesFilter');
+    const currentValue = parseInt(slider.value);
+    if (currentValue < parseInt(slider.max)) {
+      slider.value = currentValue + 1;
+      rankingFilters.minTimes = currentValue + 1;
+      document.getElementById('minTimesValue').textContent = slider.value;
+      renderRanking();
+    }
+  });
+  
+  // Limit select
+  document.getElementById('limitSelect')?.addEventListener('change', function() {
+    rankingFilters.limit = this.value;
+    renderRanking();
+  });
+  
+  // Copy button
+  document.getElementById('copyStatsBtn')?.addEventListener('click', copyStatsAsText);
+  
   // Refresh button
   document.getElementById('refreshBtn')?.addEventListener('click', refreshStats);
   
-  // Export button
-  document.getElementById('exportBtn')?.addEventListener('click', exportToExcel);
+  // Export button (removed - can add back if needed)
+  document.getElementById('exportBtn')?.addEventListener('click', () => {
+    showNotification('ℹ️ ฟีเจอร์นี้กำลังพัฒนา', 'info');
+  });
   
   // Print button
   document.getElementById('printBtn')?.addEventListener('click', printStats);

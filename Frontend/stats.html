@@ -88,9 +88,49 @@
             </section>
 
             <section class="ranking-section">
-                <h2>🏆 TOP 10 มาสายบ่อยสุด</h2>
-                <div id="rankingList" class="ranking-list">
-                    <!-- Ranking loaded here -->
+                <div class="ranking-header">
+                    <h2>📋 สถิติมาสาย</h2>
+                    <div class="ranking-controls">
+                        <div class="control-group">
+                            <label for="minTimesFilter">มาสายมากกว่า:</label>
+                            <button id="decreaseBtn" class="btn-small">-</button>
+                            <input type="range" id="minTimesFilter" min="1" max="20" value="1" step="1">
+                            <button id="increaseBtn" class="btn-small">+</button>
+                            <span id="minTimesValue">1</span> ครั้ง
+                        </div>
+                        <div class="control-group">
+                            <label for="limitSelect">แสดง:</label>
+                            <select id="limitSelect" class="filter-select">
+                                <option value="10">10 คน</option>
+                                <option value="20">20 คน</option>
+                                <option value="30">30 คน</option>
+                                <option value="50">50 คน</option>
+                                <option value="all">ทั้งหมด</option>
+                            </select>
+                        </div>
+                        <button id="copyStatsBtn" class="btn btn-secondary">📋 Copy ข้อความ</button>
+                    </div>
+                </div>
+                
+                <div class="ranking-table-container">
+                    <table class="ranking-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 80px;">ลำดับ</th>
+                                <th style="width: 150px;">รหัสนักเรียน</th>
+                                <th>ชื่อ - นามสกุล</th>
+                                <th style="width: 120px;">ชั้น</th>
+                                <th style="width: 120px;">สถิติ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rankingTableBody">
+                            <!-- Ranking rows loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div id="noDataMessage" class="no-data" style="display: none;">
+                    <p>ไม่มีข้อมูลนักเรียนมาสายในช่วงที่เลือก</p>
                 </div>
             </section>
 
