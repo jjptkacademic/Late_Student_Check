@@ -85,14 +85,6 @@ function renderClassrooms() {
   const grid = document.getElementById('classroomGrid');
   grid.innerHTML = '';
   
-  // Show cache indicator
-  if (isCacheValid()) {
-    const cacheIndicator = document.createElement('div');
-    cacheIndicator.style.cssText = 'grid-column: 1/-1; text-align: center; padding: var(--space-sm); background: var(--color-bg); border-radius: var(--radius-md); font-size: var(--font-sm); color: var(--color-text-light);';
-    cacheIndicator.innerHTML = '📦 ใช้ข้อมูลจาก Cache (ประหยัดเวลาโหลด)';
-    grid.appendChild(cacheIndicator);
-  }
-  
   // Group students by classroom
   const grouped = groupBy(allStudents, 'class_room');
   

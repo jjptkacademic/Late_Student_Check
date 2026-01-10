@@ -33,12 +33,13 @@ body {
 .header-content {
   max-width: 680px;
   margin: 0 auto;
-  padding: var(--space-md) var(--space-lg);
+  padding: var(--space-md) 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: var(--space-md);
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  width: 100%;
 }
 
 .header-left {
@@ -51,6 +52,8 @@ body {
   font-size: var(--font-xl);
   font-weight: var(--font-bold);
   color: var(--color-text);
+  margin: 0;
+  line-height: 1;
 }
 
 .subtitle {

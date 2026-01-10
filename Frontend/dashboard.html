@@ -2,24 +2,23 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=1024, initial-scale=1.0, user-scalable=yes">
     <title>หน้าหลัก - ระบบเช็คนักเรียนมาสาย</title>
     <link rel="stylesheet" href="css/variables.css">
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/dashboard.css">
-    <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
     <div class="container">
         <header class="header">
             <div class="header-content">
                 <div class="header-left">
-                    <h1>🏫 ระบบเช็คนักเรียนมาสาย</h1>
-                    <p class="subtitle">👤 ครูผู้สอน</p>
+                    <h1 style="margin: 0;">🏫 ระบบเช็คนักเรียนมาสาย <span style="font-size: var(--font-sm); color: var(--color-text-light); font-weight: normal;">👤 ครูผู้สอน</span></h1>
                 </div>
                 <div class="header-right">
+                    <button id="refreshBtn" class="btn btn-icon" title="รีเฟรช">🔄</button>
                     <button id="logoutBtn" class="btn btn-outline">🚪 ออกจากระบบ</button>
                 </div>
             </div>
@@ -28,10 +27,9 @@
         <main class="main-content">
             <section class="dashboard-section">
                 <div class="section-header">
-                    <h2>🎯 เลือกห้องเรียน</h2>
-                    <div style="display: flex; gap: var(--space-md);">
-                        <button id="refreshBtn" class="btn btn-outline">🔄 รีเฟรชข้อมูล</button>
-                        <button id="viewStatsBtn" class="btn btn-secondary">📊 ดูสถิติทั้งหมด</button>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); width: 100%;">
+                        <h2 style="margin: 0;">🎯 เลือกห้องเรียน</h2>
+                        <button id="viewStatsBtn" class="btn btn-secondary btn-sm">📊 สถิติ</button>
                     </div>
                 </div>
 
