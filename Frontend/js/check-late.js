@@ -425,10 +425,7 @@ async function showStudentDetail(studentId) {
   window.showStudentDetailFromStats(student);
 }
 
-// Hide student detail modal
-function hideStudentDetail() {
-  window.hideStudentDetail();
-}
+// Note: hideStudentDetail is exported from stats.js to window object
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', function() {

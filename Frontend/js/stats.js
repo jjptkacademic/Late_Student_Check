@@ -9,6 +9,11 @@ let currentFilter = {
 
 // Load stats page
 async function loadStats() {
+  // Check if we're on stats page (has required elements)
+  if (!document.getElementById('totalLate')) {
+    return; // Skip initialization if not on stats page
+  }
+  
   showLoading('loadingSpinner', '📊 กำลังโหลดสถิติ...');
   
   try {
@@ -59,6 +64,9 @@ function renderStats() {
 
 // Render overview cards
 function renderOverview() {
+  // Skip if elements don't exist (not on stats page)
+  if (!document.getElementById('totalLate')) return;
+  
   const totalLate = lateSummary.reduce((sum, s) => sum + s.total_late, 0);
   const totalStudents = lateSummary.filter(s => s.total_late > 0).length;
   const avgLate = totalStudents > 0 ? (totalLate / totalStudents).toFixed(1) : 0;
@@ -87,6 +95,8 @@ function renderOverview() {
 // Render ranking
 function renderRanking() {
   const list = document.getElementById('rankingList');
+  if (!list) return; // Skip if element doesn't exist
+  
   list.innerHTML = '';
   
   // Sort by total_late descending
@@ -111,6 +121,8 @@ function renderRanking() {
 // Render chart
 function renderChart() {
   const chart = document.getElementById('classChart');
+  if (!chart) return; // Skip if element doesn't exist
+  
   chart.innerHTML = '';
   
   // Group by classroom
@@ -142,6 +154,8 @@ function renderChart() {
 // Render class filter
 function renderClassFilter(classrooms) {
   const select = document.getElementById('classFilter');
+  if (!select) return; // Skip if element doesn't exist
+  
   const currentValue = select.value;
   
   select.innerHTML = '<option value="">ทั้งหมด</option>';
