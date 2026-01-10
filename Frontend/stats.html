@@ -2,14 +2,13 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=1024, initial-scale=1.0, user-scalable=yes">
     <title>สถิติและ Ranking - ระบบเช็คนักเรียนมาสาย</title>
     <link rel="stylesheet" href="css/variables.css">
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/stats.css">
-    <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
     <div class="container">
@@ -19,6 +18,9 @@
                     <button id="backBtn" class="btn btn-icon">⬅️</button>
                     <button id="homeBtn" class="btn btn-icon">🏠</button>
                     <h1>📊 สถิติการมาสาย</h1>
+                </div>
+                <div class="header-right">
+                    <button id="refreshBtn" class="btn btn-icon" title="รีเฟรช">🔄</button>
                 </div>
             </div>
         </header>
@@ -41,7 +43,6 @@
                             <option value="year">ปีนี้</option>
                         </select>
                     </div>
-                    <button id="refreshBtn" class="btn btn-primary">🔄 รีเฟรช</button>
                 </div>
             </section>
 
@@ -89,26 +90,30 @@
 
             <section class="ranking-section">
                 <div class="ranking-header">
-                    <h2>📋 สถิติมาสาย</h2>
-                    <div class="ranking-controls">
-                        <div class="control-group">
-                            <label for="minTimesFilter">มาสายมากกว่า:</label>
-                            <button id="decreaseBtn" class="btn-small">-</button>
-                            <input type="range" id="minTimesFilter" min="1" max="20" value="1" step="1">
-                            <button id="increaseBtn" class="btn-small">+</button>
-                            <span id="minTimesValue">1</span> ครั้ง
+                    <h2 style="margin: 0 0 var(--space-sm) 0; font-size: var(--font-lg); text-align: center;">📋 สถิติมาสาย</h2>
+                    <div style="display: flex; justify-content: center; align-items: center; gap: var(--space-md);">
+                        <div style="display: flex; gap: var(--space-md); align-items: center; width: 680px; justify-content: space-between;">
+                            <div style="display: flex; gap: var(--space-md); align-items: center;">
+                                <div class="control-group">
+                                    <label for="limitSelect">แสดง:</label>
+                                    <select id="limitSelect" class="filter-select" style="width: auto; min-width: 90px; padding: var(--space-xs) var(--space-sm); font-size: var(--font-sm);">
+                                        <option value="10">10 คน</option>
+                                        <option value="20">20 คน</option>
+                                        <option value="30">30 คน</option>
+                                        <option value="50">50 คน</option>
+                                        <option value="all">ทั้งหมด</option>
+                                    </select>
+                                </div>
+                                <div class="control-group">
+                                    <label for="minTimesFilter">มาสายมากกว่า:</label>
+                                    <button id="decreaseBtn" class="btn-small">-</button>
+                                    <input type="range" id="minTimesFilter" min="1" max="20" value="1" step="1">
+                                    <button id="increaseBtn" class="btn-small">+</button>
+                                    <span id="minTimesValue">1</span> ครั้ง
+                                </div>
+                            </div>
+                            <button id="copyStatsBtn" class="btn btn-secondary btn-sm">📋 Copy</button>
                         </div>
-                        <div class="control-group">
-                            <label for="limitSelect">แสดง:</label>
-                            <select id="limitSelect" class="filter-select">
-                                <option value="10">10 คน</option>
-                                <option value="20">20 คน</option>
-                                <option value="30">30 คน</option>
-                                <option value="50">50 คน</option>
-                                <option value="all">ทั้งหมด</option>
-                            </select>
-                        </div>
-                        <button id="copyStatsBtn" class="btn btn-secondary">📋 Copy ข้อความ</button>
                     </div>
                 </div>
                 
@@ -116,11 +121,11 @@
                     <table class="ranking-table">
                         <thead>
                             <tr>
-                                <th style="width: 80px;">ลำดับ</th>
-                                <th style="width: 150px;">รหัสนักเรียน</th>
+                                <th>ลำดับ</th>
+                                <th>รหัสนักเรียน</th>
                                 <th>ชื่อ - นามสกุล</th>
-                                <th style="width: 120px;">ชั้น</th>
-                                <th style="width: 120px;">สถิติ</th>
+                                <th>ชั้น</th>
+                                <th>สถิติ</th>
                             </tr>
                         </thead>
                         <tbody id="rankingTableBody">

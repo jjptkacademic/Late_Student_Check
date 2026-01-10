@@ -3,114 +3,134 @@
 .filters-section {
   background-color: var(--color-surface);
   border-radius: var(--radius-lg);
-  padding: var(--space-lg);
-  margin-bottom: var(--space-xl);
+  padding: var(--space-md);
+  margin-bottom: var(--space-lg);
   box-shadow: var(--shadow-sm);
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .filters {
   display: flex;
+  flex-direction: row;
   gap: var(--space-md);
-  align-items: flex-end;
-  flex-wrap: wrap;
+  align-items: center;
 }
 
 .filter-group {
-  flex: 1;
-  min-width: 150px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .filter-group label {
-  display: block;
-  margin-bottom: var(--space-xs);
   font-weight: var(--font-medium);
   color: var(--color-text);
   font-size: var(--font-sm);
+  white-space: nowrap;
 }
 
 .filter-select {
-  width: 100%;
-  padding: var(--space-sm) var(--space-md);
+  flex: 1;
+  min-width: 130px;
+  padding: var(--space-xs) var(--space-sm);
   border: 2px solid var(--color-border);
   border-radius: var(--radius-md);
-  font-size: var(--font-base);
+  font-size: var(--font-sm);
 }
 
 .stats-overview {
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-lg);
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .stats-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--space-lg);
+  display: flex;
+  gap: var(--space-xs);
+  justify-content: space-between;
 }
 
 .stat-card {
   background-color: var(--color-surface);
-  border-radius: var(--radius-lg);
-  padding: var(--space-lg);
-  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-sm);
+  padding: var(--space-xs);
+  box-shadow: var(--shadow-sm);
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: var(--space-md);
+  gap: 2px;
   transition: transform var(--transition-base);
+  flex: 1;
+  text-align: center;
 }
 
 .stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 .stat-icon {
-  font-size: var(--font-4xl);
+  font-size: var(--font-lg);
 }
 
 .stat-info h3 {
-  font-size: var(--font-sm);
+  font-size: var(--font-xs);
   color: var(--color-text-light);
   margin: 0;
   font-weight: var(--font-medium);
+  white-space: nowrap;
 }
 
 .stat-value {
-  font-size: var(--font-3xl);
+  font-size: var(--font-lg);
   font-weight: var(--font-bold);
   color: var(--color-primary);
-  margin: var(--space-xs) 0;
+  margin: 0;
+  line-height: 1;
 }
 
 .stat-label {
   font-size: var(--font-xs);
   color: var(--color-text-lighter);
 }
+  color: var(--color-text-lighter);
+}
 
 .ranking-section {
   background-color: var(--color-surface);
   border-radius: var(--radius-lg);
-  padding: var(--space-lg);
-  margin-bottom: var(--space-xl);
-  box-shadow: var(--shadow-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-lg);
+  box-shadow: var(--shadow-sm);
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .ranking-header {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: var(--space-lg);
-  gap: var(--space-lg);
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+  position: relative;
 }
 
 .ranking-header h2 {
   margin: 0;
+  font-size: var(--font-lg);
 }
 
 .ranking-controls {
   display: flex;
+  flex-wrap: nowrap;
   gap: var(--space-md);
   align-items: center;
-  flex-wrap: wrap;
+  font-size: var(--font-sm);
+  position: relative;
+  width: 100%;
 }
 
 .control-group {
@@ -118,6 +138,7 @@
   align-items: center;
   gap: var(--space-xs);
   font-size: var(--font-sm);
+  white-space: nowrap;
 }
 
 .control-group label {
@@ -128,6 +149,7 @@
 
 .control-group input[type="range"] {
   width: 120px;
+  margin-left: var(--space-sm);
 }
 
 .control-group #minTimesValue {
@@ -164,11 +186,21 @@
 .ranking-table-container {
   overflow-x: auto;
   margin-top: var(--space-md);
+  display: flex;
+  justify-content: center;
 }
 
 .ranking-table {
-  width: 100%;
+  width: auto;
   border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.ranking-table th:nth-child(1) { width: 60px; }   /* ลำดับ */
+.ranking-table th:nth-child(2) { width: 100px; }  /* รหัสนักเรียน */
+.ranking-table th:nth-child(3) { width: 350px; }  /* ชื่อ-นามสกุล */
+.ranking-table th:nth-child(4) { width: 80px; }   /* ชั้น */
+.ranking-table th:nth-child(5) { width: 90px; }   /* สถิติ */
   background-color: var(--color-surface);
 }
 
@@ -178,11 +210,12 @@
 }
 
 .ranking-table th {
-  padding: var(--space-md);
+  padding: var(--space-sm);
   text-align: left;
   font-weight: var(--font-semibold);
   border: 1px solid var(--color-border);
   white-space: nowrap;
+  font-size: var(--font-sm);
 }
 
 .ranking-table tbody tr {
@@ -199,8 +232,9 @@
 }
 
 .ranking-table td {
-  padding: var(--space-md);
+  padding: var(--space-sm);
   border: 1px solid var(--color-border);
+  font-size: var(--font-sm);
 }
 
 .ranking-table td:first-child {
@@ -233,13 +267,21 @@
 .chart-section {
   background-color: var(--color-surface);
   border-radius: var(--radius-lg);
-  padding: var(--space-lg);
-  margin-bottom: var(--space-xl);
-  box-shadow: var(--shadow-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-lg);
+  box-shadow: var(--shadow-sm);
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.chart-section h2 {
+  font-size: var(--font-lg);
+  margin-bottom: var(--space-md);
 }
 
 .chart-container {
-  margin-top: var(--space-lg);
+  margin-top: var(--space-md);
 }
 
 .chart-bar {
@@ -283,6 +325,10 @@
   gap: var(--space-md);
   justify-content: center;
   flex-wrap: wrap;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: var(--space-xl);
 }
 
 .student-info {
