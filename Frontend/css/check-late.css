@@ -25,6 +25,9 @@
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
   margin-bottom: var(--space-xl);
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .today-records-section h2 {
@@ -43,15 +46,15 @@
   background-color: var(--color-surface);
   border: 1px solid var(--color-late);
   border-radius: var(--radius-md);
-  padding: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
   display: grid;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: 280px 1fr auto;
   align-items: center;
-  gap: var(--space-md);
+  gap: var(--space-sm);
 }
 
 .record-student {
-  min-width: 200px;
+  font-weight: var(--font-medium);
 }
 
 .record-student strong {
@@ -60,25 +63,24 @@
 
 .record-info {
   display: flex;
-  gap: var(--space-md);
+  flex-direction: column;
+  gap: var(--space-xs);
   align-items: center;
   font-size: var(--font-sm);
   color: var(--color-text-light);
-  min-width: 300px;
+  text-align: center;
 }
 
 .record-reason {
   font-size: var(--font-sm);
   color: var(--color-text-light);
   font-style: italic;
-  display: inline-block;
-  min-width: 100px;
 }
 
 .record-actions {
   display: flex;
-  gap: var(--space-sm);
-  justify-content: flex-end;
+  gap: var(--space-xs);
+  justify-content: flex-start;
 }
 
 /* History Table in Modal */
@@ -132,31 +134,42 @@
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
   box-shadow: var(--shadow-md);
+  max-width: 680px;
+  margin: 0 auto;
 }
 
 .search-bar {
   margin-bottom: var(--space-lg);
+  max-width: 680px;
+}
+
+.search-bar .search-input {
+  width: 100%;
+  max-width: 680px;
 }
 
 .students-table-container {
-  max-height: 600px;
-  overflow-y: auto;
   margin-bottom: var(--space-lg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+  overflow-x: auto;
 }
 
 .students-table {
-  width: 100%;
+  width: auto;
   border-collapse: collapse;
+  table-layout: fixed;
 }
+
+.students-table th:nth-child(1) { width: 60px; }   /* ลำดับ */
+.students-table th:nth-child(2) { width: 90px; }   /* รหัส */
+.students-table th:nth-child(3) { width: 280px; }  /* ชื่อ-นามสกุล */
+.students-table th:nth-child(4) { width: 70px; }   /* มาสาย */
+.students-table th:nth-child(5) { width: 180px; }  /* สาเหตุ */
 
 .students-table thead {
   background-color: var(--color-primary);
   color: white;
-  position: sticky;
-  top: 0;
-  z-index: 10;
 }
 
 .students-table th {
@@ -252,6 +265,7 @@
   padding: var(--space-md);
   text-align: center;
   margin-bottom: var(--space-lg);
+  max-width: 680px;
 }
 
 .form-actions {
@@ -259,4 +273,5 @@
   gap: var(--space-md);
   justify-content: center;
   flex-wrap: wrap;
+  max-width: 680px;
 }
