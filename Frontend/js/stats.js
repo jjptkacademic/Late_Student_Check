@@ -215,6 +215,9 @@ async function showStudentDetail(student) {
     const response = await API.getLateRecords({ student_id: student.student_id });
     
     if (response.success && response.data.length > 0) {
+      // Update total_late with actual count from records
+      document.getElementById('detailTotal').textContent = response.data.length;
+      
       // Create table
       const table = document.createElement('table');
       table.className = 'history-table';
@@ -248,6 +251,8 @@ async function showStudentDetail(student) {
       historyList.innerHTML = '';
       historyList.appendChild(table);
     } else {
+      // Update total_late to 0 if no records
+      document.getElementById('detailTotal').textContent = 0;
       historyList.innerHTML = '<p style="text-align: center; color: var(--color-text-light); padding: var(--space-lg);">ไม่มีประวัติการมาสาย</p>';
     }
   } catch (error) {

@@ -126,9 +126,9 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
   // Refresh button (if exists)
-  document.getElementById('refreshBtn')?.addEventListener('click', function() {
+  document.getElementById('refreshBtn')?.addEventListener('click', async function() {
     clearCache();
-    loadDashboard(true); // Force refresh
+    await loadDashboard(true); // Force refresh and wait
     showNotification('🔄 รีเฟรชข้อมูลเรียบร้อย', 'success');
   });
 });

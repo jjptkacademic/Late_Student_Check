@@ -421,8 +421,24 @@ async function showStudentDetail(studentId) {
     return;
   }
   
-  // Use the same modal from stats.js
-  window.showStudentDetailFromStats(student);
+  // Show modal immediately with loading state
+  const studentWithLoading = { 
+    ...student, 
+    total_late: '⏳' 
+  };
+  window.showStudentDetailFromStats(studentWithLoading);
+  
+  // Load records (this also calculates total from records.length)
+  try {
+    const response = await API.getLateRecords({ student_id: studentId });
+    
+    // Calculate total from records and update immediately
+    const totalLate = response.success && response.data ? response.data.length : 0;
+    document.getElementById('detailTotal').textContent = totalLate;
+  } catch (error) {
+    console.error('Error loading student detail:', error);
+    document.getElementById('detailTotal').textContent = 0;
+  }
 }
 
 // Note: hideStudentDetail is exported from stats.js to window object
