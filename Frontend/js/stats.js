@@ -397,6 +397,11 @@ document.addEventListener('DOMContentLoaded', function() {
   // Print button
   document.getElementById('printBtn')?.addEventListener('click', printStats);
   
+  // Charts button
+  document.getElementById('chartsBtn')?.addEventListener('click', () => {
+    window.location.href = 'charts.html';
+  });
+  
   // Modal close buttons
   document.getElementById('closeDetailModal')?.addEventListener('click', hideStudentDetail);
   document.getElementById('closeDetailBtn')?.addEventListener('click', hideStudentDetail);
