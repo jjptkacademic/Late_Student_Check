@@ -1,32 +1,47 @@
 // API Configuration
 const API_URL = 'https://script.google.com/macros/s/AKfycbyCg4YURWkZj01-wUI8psbwlNVGSHD4qW1NGEuDOgUF-meMsvbprCRsqxqvwv2X7OfLrg/exec';
 
+console.log('🔧 API Helper loaded - Version 2.0 with clearCache');
+
 // API Helper Functions
 const API = {
   // GET: ดึงรายชื่อนักเรียนทั้งหมด
-  async getStudents(filters = {}) {
+  async getStudents(filters = {}, forceRefresh = false) {
     const params = new URLSearchParams({ path: 'students', ...filters });
+    // เพิ่ม timestamp เพื่อ bypass cache (ถ้า forceRefresh = true)
+    if (forceRefresh) {
+      params.append('_t', Date.now());
+    }
     const response = await fetch(`${API_URL}?${params}`);
     return response.json();
   },
 
   // GET: ดึงข้อมูลนักเรียนคนเดียว
-  async getStudent(studentId) {
+  async getStudent(studentId, forceRefresh = false) {
     const params = new URLSearchParams({ path: 'student', id: studentId });
+    if (forceRefresh) {
+      params.append('_t', Date.now());
+    }
     const response = await fetch(`${API_URL}?${params}`);
     return response.json();
   },
 
   // GET: ดึงบันทึกการมาสาย
-  async getLateRecords(filters = {}) {
+  async getLateRecords(filters = {}, forceRefresh = false) {
     const params = new URLSearchParams({ path: 'late-records', ...filters });
+    if (forceRefresh) {
+      params.append('_t', Date.now());
+    }
     const response = await fetch(`${API_URL}?${params}`);
     return response.json();
   },
 
   // GET: รายงานสรุปจำนวนครั้งที่มาสาย
-  async getLateSummary(filters = {}) {
+  async getLateSummary(filters = {}, forceRefresh = false) {
     const params = new URLSearchParams({ path: 'late-summary', ...filters });
+    if (forceRefresh) {
+      params.append('_t', Date.now());
+    }
     const response = await fetch(`${API_URL}?${params}`);
     return response.json();
   },
@@ -49,6 +64,19 @@ const API = {
       body: JSON.stringify(data)
     });
     return response.json();
+  },
+
+  // 🔄 CLEAR CACHE: เรียกใช้เมื่อกดปุ่ม Refresh
+  async clearCache() {
+    console.log('🔄 Calling clearCache API...');
+    const url = `${API_URL}?path=clear-cache`;
+    console.log('📡 URL:', url);
+    
+    const response = await fetch(url);
+    const result = await response.json();
+    
+    console.log('✅ clearCache result:', result);
+    return result;
   }
 };
 

@@ -1,6 +1,8 @@
 // API Helper - copied from root and updated
 const API_URL = CONFIG.API_URL;
 
+console.log('🔧 API Helper loaded - Version 2.1 with clearCache');
+
 const API = {
   // GET: ดึงรายชื่อนักเรียนทั้งหมด
   async getStudents(filters = {}) {
@@ -100,6 +102,24 @@ const API = {
       return await response.json();
     } catch (error) {
       console.error('Error adding student:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  // 🔄 CLEAR CACHE: ล้าง cache บน server
+  async clearCache() {
+    try {
+      console.log('🔄 Calling clearCache API...');
+      const url = `${API_URL}?path=clear-cache`;
+      console.log('📡 URL:', url);
+      
+      const response = await fetch(url);
+      const result = await response.json();
+      
+      console.log('✅ clearCache result:', result);
+      return result;
+    } catch (error) {
+      console.error('Error clearing cache:', error);
       return { success: false, error: error.message };
     }
   }

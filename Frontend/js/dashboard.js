@@ -14,9 +14,13 @@ function isCacheValid() {
 
 // Load dashboard data
 async function loadDashboard(forceRefresh = false) {
+  PM.start('loadDashboard');
+  
   showLoading('loadingSpinner', '🏫 กำลังโหลดข้อมูลห้องเรียน...');
   
   try {
+    PM.checkpoint('loadDashboard', 'Checking cache...');
+    
     // Check cache first
     if (!forceRefresh && isCacheValid()) {
       const cachedStudents = Storage.get('cached_students');
@@ -24,29 +28,40 @@ async function loadDashboard(forceRefresh = false) {
       
       if (cachedStudents && cachedSummary) {
         console.log('📦 Using cached data');
+        PM.checkpoint('loadDashboard', 'Using cached data');
         allStudents = cachedStudents;
         lateSummary = cachedSummary;
+        
+        PM.start('renderClassrooms');
         renderClassrooms();
+        PM.end('renderClassrooms');
+        
         hideLoading();
+        PM.end('loadDashboard');
         return;
       }
     }
     
     console.log('🔄 Fetching fresh data');
+    PM.checkpoint('loadDashboard', 'Fetching from API');
     
     // Fetch students and late summary
+    PM.start('API.getStudents+getLateSummary');
     const [studentsResponse, summaryResponse] = await Promise.all([
       API.getStudents(),
       API.getLateSummary()
     ]);
+    PM.end('API.getStudents+getLateSummary');
     
     if (studentsResponse.success) {
       allStudents = studentsResponse.data;
+      PM.checkpoint('loadDashboard', `Loaded ${allStudents.length} students`);
       Storage.set('cached_students', allStudents);
     }
     
     if (summaryResponse.success) {
       lateSummary = summaryResponse.data;
+      PM.checkpoint('loadDashboard', `Loaded ${lateSummary.length} summary records`);
       Storage.set('cached_summary', lateSummary);
     }
     
@@ -54,12 +69,17 @@ async function loadDashboard(forceRefresh = false) {
     cacheTimestamp = Date.now();
     Storage.set('cache_timestamp', cacheTimestamp);
     
+    PM.start('renderClassrooms');
     renderClassrooms();
+    PM.end('renderClassrooms');
+    
   } catch (error) {
     console.error('Error loading dashboard:', error);
+    PM.checkpoint('loadDashboard', `ERROR: ${error.message}`);
     showNotification('❌ เกิดข้อผิดพลาดในการโหลดข้อมูล', 'error');
   } finally {
     hideLoading();
+    PM.end('loadDashboard');
   }
 }
 
@@ -127,8 +147,43 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Refresh button (if exists)
   document.getElementById('refreshBtn')?.addEventListener('click', async function() {
-    clearCache();
-    await loadDashboard(true); // Force refresh and wait
-    showNotification('🔄 รีเฟรชข้อมูลเรียบร้อย', 'success');
+    const btn = this;
+    
+    // ✅ แสดง Loading ทันที!
+    showLoading('loadingSpinner', '🔄 กำลังรีเฟรชข้อมูล...');
+    
+    btn.disabled = true;
+    btn.textContent = '⏳';
+    
+    console.log('🔄 Refresh button clicked');
+    console.log('📦 API object:', API);
+    console.log('🔍 API.clearCache exists?', typeof API.clearCache);
+    
+    try {
+      // Clear cache on server
+      if (typeof API.clearCache === 'function') {
+        console.log('✅ Calling API.clearCache()...');
+        await API.clearCache();
+      } else {
+        console.error('❌ API.clearCache is not a function!');
+        console.log('Available API methods:', Object.keys(API));
+        throw new Error('API.clearCache is not a function');
+      }
+      
+      // Clear local cache
+      clearCache();
+      
+      // Reload data (loadDashboard จะ hideLoading เอง)
+      await loadDashboard(true); // Force refresh and wait
+      
+      showNotification('🔄 รีเฟรชข้อมูลเรียบร้อย', 'success');
+    } catch (error) {
+      console.error('❌ Refresh error:', error);
+      showNotification('❌ เกิดข้อผิดพลาด: ' + error.message, 'error');
+      hideLoading(); // ต้อง hide เองเพราะ loadDashboard อาจไม่ทำงาน
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '🔄';
+    }
   });
 });

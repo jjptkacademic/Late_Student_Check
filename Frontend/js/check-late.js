@@ -14,6 +14,8 @@ function getClassFromURL() {
 
 // Load page data
 async function loadPage() {
+  PM.start('loadPage');
+  
   currentClass = getClassFromURL();
   
   if (!currentClass) {
@@ -21,51 +23,83 @@ async function loadPage() {
     return;
   }
   
+  PM.checkpoint('loadPage', `Loading class: ${currentClass}`);
+  
   showLoading('loadingSpinner', '📚 กำลังโหลดข้อมูลห้องเรียน...');
   startClock();
   
   try {
     // Load students first, then late records (sequential)
+    PM.start('loadStudents');
     await loadStudents();
+    PM.end('loadStudents');
+    
+    PM.start('loadClassrooms');
     await loadClassrooms();
+    PM.end('loadClassrooms');
+    
+    PM.start('loadTodayRecords');
     await loadTodayRecords(); // Load after students loaded
+    PM.end('loadTodayRecords');
+    
   } catch (error) {
     console.error('Error loading page:', error);
+    PM.checkpoint('loadPage', `ERROR: ${error.message}`);
     showNotification('❌ เกิดข้อผิดพลาดในการโหลดข้อมูล', 'error');
   } finally {
     hideLoading();
+    PM.end('loadPage');
   }
 }
 
-// Load students for current class
+// Load students for current class (with cache)
 async function loadStudents() {
+  PM.checkpoint('loadStudents', 'Checking localStorage cache...');
+  
+  // ลอง cache จาก dashboard ก่อน
+  const cachedAllStudents = Storage.get('cached_students');
+  
+  if (cachedAllStudents && cachedAllStudents.length > 0) {
+    PM.checkpoint('loadStudents', 'Using cached data from dashboard');
+    // Filter เฉพาะห้องที่ต้องการ
+    allStudents = cachedAllStudents.filter(s => s.class_room === currentClass);
+    PM.checkpoint('loadStudents', `Filtered ${allStudents.length} students from cache`);
+    console.log('Students loaded:', allStudents);
+    return;
+  }
+  
+  // ถ้าไม่มี cache ค่อยเรียก API
+  PM.checkpoint('loadStudents', 'No cache, calling API...');
   const response = await API.getStudents({ class_room: currentClass });
   
   if (response.success) {
     allStudents = response.data;
-    console.log('Students loaded:', allStudents); // Debug
-    // Don't render yet, wait for todayRecords
+    PM.checkpoint('loadStudents', `Loaded ${allStudents.length} students from API`);
+    console.log('Students loaded:', allStudents);
   }
 }
 
-// Load today's late records
+// Load today's late records (optimized)
 async function loadTodayRecords() {
   const today = getCurrentDate();
+  
+  PM.checkpoint('loadTodayRecords', `Fetching records for ${today}...`);
+  
   const response = await API.getLateRecords({
     date_from: today,
     date_to: today
   });
   
-  console.log('Today records response:', response); // Debug
+  console.log('Today records response:', response);
   
   if (response.success && response.data) {
-    // Filter records for current class
-    todayRecords = response.data.filter(r => {
-      const student = allStudents.find(s => s.student_id == r.student_id);
-      console.log(`Checking record: student_id=${r.student_id}, found=${!!student}`); // Debug
-      return student && student.class_room === currentClass;
-    });
-    console.log('Filtered today records:', todayRecords); // Debug
+    // Filter records for current class (faster with Set)
+    const classStudentIds = new Set(allStudents.map(s => s.student_id));
+    todayRecords = response.data.filter(r => classStudentIds.has(r.student_id));
+    
+    PM.checkpoint('loadTodayRecords', `Filtered ${todayRecords.length} records for class ${currentClass}`);
+    console.log('Filtered today records:', todayRecords);
+    
     renderTodayRecords();
     
     // Re-render students list with updated todayRecords
@@ -83,23 +117,44 @@ async function loadTodayRecords() {
   }
 }
 
-// Load all classrooms for selector
+// Load all classrooms for selector (with cache)
 async function loadClassrooms() {
+  PM.checkpoint('loadClassrooms', 'Checking cache...');
+  
+  // ใช้ cache จาก dashboard
+  const cachedStudents = Storage.get('cached_students');
+  
+  if (cachedStudents && cachedStudents.length > 0) {
+    PM.checkpoint('loadClassrooms', 'Using cached classrooms');
+    const classrooms = getUniqueClassrooms(cachedStudents);
+    renderClassSelector(classrooms);
+    return;
+  }
+  
+  // ถ้าไม่มี cache ค่อยเรียก API
+  PM.checkpoint('loadClassrooms', 'No cache, calling API...');
   const response = await API.getStudents();
   
   if (response.success) {
     const classrooms = getUniqueClassrooms(response.data);
+    PM.checkpoint('loadClassrooms', `Loaded ${classrooms.length} classrooms`);
     renderClassSelector(classrooms);
   }
 }
 
 // Render students list with checkboxes
 function renderStudentsList(students) {
+  PM.start('renderStudentsList');
+  PM.checkpoint('renderStudentsList', `Rendering ${students.length} students`);
+  
   const tbody = document.getElementById('studentsTableBody');
   tbody.innerHTML = '';
   
   // Get list of student IDs who are already late today
   const lateStudentIds = new Set(todayRecords.map(r => r.student_id));
+  
+  // Use DocumentFragment for better performance
+  const fragment = document.createDocumentFragment();
   
   students.forEach((student, index) => {
     const tr = document.createElement('tr');
@@ -197,8 +252,13 @@ function renderStudentsList(students) {
     tr.appendChild(tdCheckbox);
     tr.appendChild(tdReason);
     
-    tbody.appendChild(tr);
+    fragment.appendChild(tr);
   });
+  
+  tbody.appendChild(fragment);
+  
+  PM.checkpoint('renderStudentsList', 'Rendering complete');
+  PM.end('renderStudentsList');
 }
 
 // Render today's records

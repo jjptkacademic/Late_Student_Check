@@ -1,7 +1,7 @@
 // Configuration
 const CONFIG = {
   // API Configuration
-  API_URL: 'https://script.google.com/macros/s/AKfycby5Lhe_yOUgV-FeRMLyfr_BKi8FTpeWn6McenG6bfY4K-otdj_FvehoHakQIJ8p7Uo10A/exec',
+  API_URL: ' https://script.google.com/macros/s/AKfycbw-2eMP9UGfT9rGPkhpg0u8DyTzXuA-n0HxL5wMM9aZrtERdkwmB8TSo4zyvriGz_N9vg/exec',
   
   // Authentication
   AUTH_PIN: '1234', // เปลี่ยนรหัสผ่านตรงนี้
@@ -16,5 +16,8 @@ const CONFIG = {
     AUTH: 'late_check_auth',
     DRAFT: 'late_check_draft',
     CACHE: 'late_check_cache'
-  }
+  },
+
+  // Performance Monitor
+  ENABLE_PERFORMANCE_MONITOR: false // เปลี่ยนเป็น true เพื่อเปิดใช้งาน Performance Monitor
 };

@@ -274,7 +274,33 @@ window.hideStudentDetail = hideStudentDetail;
 
 // Refresh stats
 async function refreshStats() {
-  await loadStats();
+  const btn = document.getElementById('refreshBtn');
+  
+  // ✅ แสดง Loading ทันที!
+  showLoading('loadingSpinner', '🔄 กำลังรีเฟรชสถิติ...');
+  
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '⏳';
+  }
+  
+  try {
+    // Clear cache on server
+    await API.clearCache();
+    
+    // Reload stats (loadStats จะ hideLoading เอง)
+    await loadStats();
+    
+    showNotification('🔄 รีเฟรชข้อมูลเรียบร้อย', 'success');
+  } catch (error) {
+    showNotification('❌ เกิดข้อผิดพลาด: ' + error.message, 'error');
+    hideLoading(); // ต้อง hide เองในกรณี error
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = '🔄';
+    }
+  }
 }
 
 // Copy stats as text
