@@ -2,6 +2,58 @@
 
 /* Mobile (default - already mobile-first) */
 
+/* Fix for all mobile devices and tablets (iOS scroll fix) */
+@media (max-width: 1024px) {
+  html, body {
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+  }
+
+  .container {
+    min-width: unset !important;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .main-content {
+    min-width: unset !important;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .charts-container {
+    padding: 15px;
+    overflow-x: hidden;
+  }
+
+  canvas {
+    max-width: 100%;
+    height: auto !important;
+  }
+
+  .heatmap {
+    min-width: 600px;
+  }
+}
+
+/* iPad specific fixes */
+@media (min-width: 768px) and (max-width: 1024px) {
+  body {
+    touch-action: pan-y;
+  }
+
+  .chart-section {
+    padding: 20px;
+  }
+
+  .stats-table,
+  .history-table,
+  .ranking-table {
+    font-size: 14px;
+  }
+}
+
 /* Tablet */
 @media (min-width: 768px) {
   .header-left h1 {
